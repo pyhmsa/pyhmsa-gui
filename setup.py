@@ -43,7 +43,6 @@ setup(name='pyHMSA-gui',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Topic :: Scientific/Engineering :: Physics',
-        'Topic :: Software Development :: User Interfaces',
         ],
 
       packages=find_packages(),
