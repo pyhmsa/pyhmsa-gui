@@ -7,9 +7,6 @@ pyHMSA-gui
 .. image:: https://travis-ci.org/pyhmsa/pyhmsa-gui.svg?branch=master
    :target: https://travis-ci.org/pyhmsa/pyhmsa-gui
    
-.. image:: https://codecov.io/github/pyhmsa/pyhmsa-gui/coverage.svg?branch=master
-   :target: https://codecov.io/github/pyhmsa/pyhmsa-gui?branch=master
-
 Provides graphical components to construct graphical interface based on the 
 Python implementation of the 
 `HMSA <http://www.csiro.au/luminescence/HMSA/index.html>`_ file format, 
@@ -30,6 +27,6 @@ GitHub repository:
 
 https://github.com/pyhmsa/pyhmsa-gui
 
-pyHMSA was developed as part of the doctorate thesis project of 
+pyHMSA-gui was developed as part of the doctorate thesis project of 
 Philippe T. Pinard at RWTH Aachen University (Aachen, Germany) under the 
 supervision of Dr. Silvia Richter.
