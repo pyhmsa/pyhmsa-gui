@@ -10,7 +10,7 @@ pyHMSA-gui
 Provides graphical components to construct graphical interface based on the 
 Python implementation of the 
 `HMSA <http://www.csiro.au/luminescence/HMSA/index.html>`_ file format, 
- `pyHMSA <https://pypi.python.org/pypi/pyHMSA>`_.
+`pyHMSA <https://pypi.python.org/pypi/pyHMSA>`_.
  
 The components are designed in Qt using the library 
 `PySide <http://qt-project.org/wiki/PySide>`_ and requires 
