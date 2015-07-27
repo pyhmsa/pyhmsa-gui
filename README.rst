@@ -12,7 +12,7 @@ pyHMSA-gui
 
 Provides graphical components to construct graphical interface based on the 
 Python implementation of the 
-`HMSA <http://www.csiro.au/luminescence/HMSA/index.html>`_ file format:
+`HMSA <http://www.csiro.au/luminescence/HMSA/index.html>`_ file format, 
  `pyHMSA <https://pypi.python.org/pypi/pyHMSA>`_.
  
 The components are designed in Qt using the library 
@@ -29,3 +29,7 @@ The most current development version is always available from our
 GitHub repository:
 
 https://github.com/pyhmsa/pyhmsa-gui
+
+pyHMSA was developed as part of the doctorate thesis project of 
+Philippe T. Pinard at RWTH Aachen University (Aachen, Germany) under the 
+supervision of Dr. Silvia Richter.
