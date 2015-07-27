@@ -7,7 +7,7 @@ addons:
     - gcc
 cache:
   directories:
-    - $HOME/.pip-cache/
+  - $HOME/.pip-cache/
 python:
 - '2.7'
 - '3.4'
@@ -23,11 +23,12 @@ script:
 notifications:
   email: false
 deploy:
+  matrix:
   - provider: pypi
     user: philippe.pinard
     password:
-      secure: nC/0Lj2H/5BZo4BAhc29fYa6AJZL+UBVfFBcoX57XMA3AD+iCHWH0HJJXoiGvKtP3M/NB1tXAB+5Tj0R6q0bUOiMnf$
-    distributions: "sdist bdist_wheel"
+      secure: hJP3Ghy7+SMGczbrMSt9oMFimM4BbvkK+g4dnRshYu96LZ6vdfeX34rBtySH7mGEj4yoJ2+Bh0oDzsOy/rPQvTwCF4R00Zad8lExFarNuZuYS5v3+YALGzwvGUjsLIuboP1AkGDZ+okEgxNkB2sGmJudqklimVpO0lc1heGnkmnjwcrMJyliejARM68bep+1gtIbpCQZDpeLUjvTzve3yasY8kqY0Pe0RjqXcLfthL9GEyHSQldLKC8L0cQo4eGgb4aN6LffesNsazUCiODjVNlaBLuDWRMsLprYkxt9XQjrHVLK812zSGmBxm3/EKK53TpYzLXgw47tFOBjcgBZSv76//X3N9jzpj2aaKMdNnh9cygNNRFJioxC2wt9y3Z6TvMiydwD+Y7CAAv9fe03CYYlv07OVgrjBGivAdzYiqid9GQaUrSgFR5uX2+1hMeKjtxrwRvVDpH1sDRvUhSxbjxCJuNgCgZfvKrGxVd1xBFhQHu2t0ZDJQR1/FS/Q3I2mi8i4bECtp3VKnFgiUIBNn0KY8QXqwGxzPXpiKDzKLMDN5xZxPAjEc6UjC5k6pndxWXYQ6mMAXxnCgY2WJmkWwlLtN6vgz2FEAtTj2fAV132MXvu3Z+WAamsgSXHTKSKv3vtEyYR0pjaOf/ti7l+3PZbKNdV033Nb+QS+TWF01s=
+    distributions: sdist bdist_wheel
     on:
       tags: true
       repo: pyhmsa/pyhmsa-gui
@@ -39,7 +40,7 @@ deploy:
     skip_cleanup: true
     local-dir: dist
     token:
-      secure: n93Y348IqhGkoztlAJ8HIfs48kGIpyvp4ZZICM34dqseWKX2BkZwU3/fWEob9OT038rIcWNgOr3+VUqQyI0JTIvAU0rvvVbEvDN6yCbRFo8ckMvMLThe0pXHecpDxWjg3BuQJXDOdc7IuqhZU948yEH9OeOinRFhIDMK97Tz56Q=
+      secure: CSbCqBfAa9OvhfCr7T8pnOqVvgNHQZ/ipM+WEpUx2WR41Cg2wIQXUtdkOgS/G1gcugnRk6La9HK0y9bWj1DDOaeRHLxgVnkIfLfi4uMKn0yloOY+nn+81DVz/m0Fqo0ciWRTqaXiLixqIV9OdVjqEg1SS0/vnB715d6SMIpQ/NW+jI9Do/78ZrcsJJMBXGlnlTI9yLIdEnaeiab3OSBJvd32q+s+eMdluPfjhgNWs48pysZ4qx3rhSR2EtmNRTZ2rI09ykdEobZR+xzodCG2e8xGkX4aqrEkVXPF8Abx7UMwlyWH18sURboRs9imCe120g2GuCsfQI6jiUJdN6FfYzEWvaBxmEuBmcNpJ2gGDx0jdsScxwfiOFvgeHvEPQvXpt7CwnQY2HBDIG0qc02J7r4OMgvH5IlnOZfBWqKcjFpeblZalJ386KznHlQwDYnDRqixf5KVcScpkji50z35r3Ga1VL6qSuTouQXCd6KMgyAsU4tA8XKQHJwbzW5fMFn0qk238tb39kV5vzsS8AGTxYRKLiHGlqXsT2W0+4MBEtwtJ+xAjaM/6RrytGD5dAdSxhAQuyXwy/bxk9k5cUj+z2tbDVwx2Hp2S/zmQ6cNFl6nn4o5YYu+2R1bAsyRm19nM5bPDyxaxTcWqXl1KarUD//6RVhQ5zMXa1SOku5g6Q=
     on:
       tags: true
       repo: pyhmsa/pyhmsa-gui
