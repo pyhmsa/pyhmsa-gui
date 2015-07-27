@@ -2,3 +2,4 @@ numpy
 pyhmsa
 matplotlib
 pyside
+six

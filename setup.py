@@ -2,6 +2,10 @@
 
 # Standard library modules.
 import os
+import sys
+import glob
+from distutils.core import Command
+from subprocess import check_call
 
 # Third party modules.
 from setuptools import setup, find_packages
@@ -10,6 +14,57 @@ from setuptools import setup, find_packages
 
 # Globals and constants variables.
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
+
+class _bdist_fpm(Command):
+
+    description = 'Build using fpm (Effing Package Management)'
+
+    user_options = [('dist-dir=', 'd',
+                     "directory to put final built distributions in "
+                     "[default: dist]"), ]
+
+    def initialize_options(self):
+        self.dist_dir = None
+
+    def finalize_options(self):
+        if self.dist_dir is None:
+            self.dist_dir = "dist"
+
+    def _run(self, target):
+        setup_filepath = os.path.join(BASEDIR, 'setup.py')
+
+        python_bin = 'python3' if sys.version_info.major == 3 else 'python'
+        version = '%i.%i' % (sys.version_info.major, sys.version_info.minor)
+
+        args = ['fpm',
+                '-s', 'python',
+                '-t', target,
+                '--force',
+                '--verbose',
+                '--maintainer', 'Philippe Pinard <philippe.pinard@gmail.com>',
+                '--category', 'science',
+                '--depends', "%s >= %s" % (python_bin, version),
+                '--depends', python_bin + '-numpy',
+                '--depends', python_bin + '-six',
+                '--depends', python_bin + '-matplotlib',
+                '--depends', python_bin + '-pyside',
+                '--depends', python_bin + '-hmsa',
+                '--no-python-dependencies',
+                '--python-bin', python_bin,
+                '--name', python_bin + '-hmsa-gui',
+                setup_filepath]
+        check_call(args)
+
+        self.mkpath(self.dist_dir)
+        for srcfilepath in glob.glob('*.%s' % target):
+            self.move_file(srcfilepath, self.dist_dir)
+
+class bdist_deb(_bdist_fpm):
+
+    description = 'Build deb '
+
+    def run(self):
+        self._run('deb')
 
 with open(os.path.join(BASEDIR, 'VERSION')) as version_file:
     version = version_file.read().strip()
@@ -48,7 +103,7 @@ setup(name='pyHMSA-gui',
       packages=find_packages(),
       package_data={'pyhmsa.gui.util': ['icons/*.rcc']},
 
-      install_requires=['pyHMSA', 'PySide', 'matplotlib', 'numpy'],
+      install_requires=['pyHMSA', 'PySide', 'matplotlib', 'numpy', 'six'],
 
       zip_safe=True,
 
@@ -107,4 +162,6 @@ setup(name='pyHMSA-gui',
              'ImageRaster2DSpectral.Graph = pyhmsa.gui.spec.datum.imageraster:ImageRaster2DSpectralGraphWidget',
              ],
          },
+
+      cmdclass={'bdist_deb': bdist_deb},
      )
