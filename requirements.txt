@@ -1,0 +1,4 @@
+numpy
+pyhmsa
+matplotlib
+pyside
