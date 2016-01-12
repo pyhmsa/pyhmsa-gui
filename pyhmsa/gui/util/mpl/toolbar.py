@@ -11,8 +11,8 @@ import six
 
 import numpy as np
 
-from PySide.QtCore import Qt, Signal
-from PySide.QtGui import \
+from qtpy.QtCore import Qt, Signal
+from qtpy.QtGui import \
     (QAction, QDialog, QComboBox, QVBoxLayout, QDialogButtonBox, QCheckBox,
      QFormLayout, QSlider, QLabel, QFileDialog, QSpinBox, QHBoxLayout,
      QMessageBox, QWidget, QButtonGroup, QRadioButton)

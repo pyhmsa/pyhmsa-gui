@@ -6,7 +6,7 @@ Calibration widgets
 import re
 
 # Third party modules.
-from PySide.QtGui import QValidator, QComboBox, QStackedWidget
+from qtpy.QtGui import QValidator, QComboBox, QStackedWidget
 
 from pkg_resources import iter_entry_points #@UnresolvedImport
 
@@ -217,9 +217,9 @@ class _CoefficientsLineEdit(_AttributeLineEdit):
             try:
                 _CoefficientsLineEdit.parse_coefficients(text)
             except:
-                return QValidator.Intermediate
+                return (QValidator.Intermediate, text, pos)
             else:
-                return QValidator.Acceptable
+                return (QValidator.Acceptable, text, pos)
 
         def fixup(self, text):
             return text
@@ -306,9 +306,9 @@ class _ExplicitLineEdit(_AttributeLineEdit):
             try:
                 map(float, _ExplicitLineEdit._PATTERN.split(text))
             except:
-                return QValidator.Intermediate
+                return (QValidator.Intermediate, text, pos)
             else:
-                return QValidator.Acceptable
+                return (QValidator.Acceptable, text, pos)
 
         def fixup(self, text):
             return text

@@ -5,7 +5,7 @@ Fix of QSettings
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtCore import QSettings
+from qtpy.QtCore import QSettings
 
 import six
 

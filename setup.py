@@ -103,7 +103,7 @@ setup(name='pyHMSA-gui',
       packages=find_packages(),
       package_data={'pyhmsa.gui.util': ['icons/*.rcc']},
 
-      install_requires=['pyHMSA', 'PySide', 'matplotlib', 'numpy', 'six'],
+      install_requires=['pyHMSA', 'qtpy', 'matplotlib', 'numpy', 'six'],
 
       zip_safe=True,
 

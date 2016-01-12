@@ -5,7 +5,7 @@ Analysis widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtCore import Qt, QAbstractTableModel
+from qtpy.QtCore import Qt, QAbstractTableModel
 
 from matplotlib.figure import Figure
 

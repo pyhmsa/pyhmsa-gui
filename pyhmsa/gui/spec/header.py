@@ -5,8 +5,8 @@ Header widget
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QDateEdit, QTimeEdit
-from PySide.QtCore import QDate, QTime
+from qtpy.QtGui import QDateEdit, QTimeEdit
+from qtpy.QtCore import QDate, QTime
 
 # Local modules.
 from pyhmsa.gui.util.parameter import ParameterWidget, TextAttributeLineEdit

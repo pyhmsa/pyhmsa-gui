@@ -5,7 +5,7 @@ Probe widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QComboBox
+from qtpy.QtGui import QComboBox
 
 # Local modules.
 from pyhmsa.gui.spec.condition.condition import _ConditionWidget

@@ -5,8 +5,8 @@ Base datum widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QWidget, QVBoxLayout, QTableView, QHeaderView, QSizePolicy
-from PySide.QtCore import Qt
+from qtpy.QtGui import QWidget, QVBoxLayout, QTableView, QHeaderView, QSizePolicy
+from qtpy.QtCore import Qt
 
 from matplotlib.backends.backend_qt4agg import \
     (FigureCanvasQTAgg as FigureCanvas,

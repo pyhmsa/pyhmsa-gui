@@ -5,8 +5,8 @@ Analysis list widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QSlider, QFormLayout
-from PySide.QtCore import Qt
+from qtpy.QtGui import QSlider, QFormLayout
+from qtpy.QtCore import Qt
 
 # Local modules.
 from pyhmsa.gui.spec.datum.datum import _DatumWidget

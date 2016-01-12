@@ -5,7 +5,7 @@ Utilities for color between matplotlib and PySide
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QColor
+from qtpy.QtGui import QColor
 
 import matplotlib.colors as colors
 

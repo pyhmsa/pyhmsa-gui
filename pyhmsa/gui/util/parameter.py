@@ -5,10 +5,10 @@ Widgets for parameters and attributes
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import \
+from qtpy.QtGui import \
     (QWidget, QLineEdit, QRegExpValidator, QValidator, QPushButton,
      QVBoxLayout, QFormLayout)
-from PySide.QtCore import QRegExp, Signal
+from qtpy.QtCore import QRegExp, Signal
 
 import six
 
@@ -76,29 +76,29 @@ class NumericalAttributeLineEdit(_AttributeLineEdit):
             parts = text.split()
             if len(parts) == 0:
                 if self._attribute.is_required():
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             elif len(parts) == 1:
                 try:
                     float(parts[0])
                 except ValueError:
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             elif len(parts) == 2:
                 try:
                     float(parts[0])
                     validate_unit(parts[1])
                 except ValueError:
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             else:
-                return QValidator.Invalid
+                return (QValidator.Invalid, text, pos)
 
         def fixup(self, text):
             return text
@@ -172,20 +172,20 @@ class UnitAttributeLineEdit(_AttributeLineEdit):
         def validate(self, text, pos):
             if not text:
                 if self._attribute.is_required():
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             try:
                 validate_unit(text)
             except ValueError:
-                return QValidator.Intermediate
+                return (QValidator.Intermediate, text, pos)
 
             if self._valid_units is not None and \
                     text not in self._valid_units:
-                return QValidator.Intermediate
+                return (QValidator.Intermediate, text, pos)
 
-            return QValidator.Acceptable
+            return (QValidator.Acceptable, text, pos)
 
         def fixup(self, text):
             return text
@@ -266,7 +266,7 @@ class ParameterWidget(QWidget):
 
     def _init_ui(self):
         layout = QFormLayout()
-        layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow) # Fix for Mac OS
+        layout.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow) # Fix for Mac OS
         return layout
 
     def _create_parameter(self):
