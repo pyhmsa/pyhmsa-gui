@@ -5,7 +5,7 @@ Header widget
 # Standard library modules.
 
 # Third party modules.
-from qtpy.QtGui import QDateEdit, QTimeEdit
+from qtpy.QtWidgets import QDateEdit, QTimeEdit
 from qtpy.QtCore import QDate, QTime
 
 # Local modules.
@@ -22,15 +22,15 @@ class HeaderWidget(ParameterWidget):
 
     def _init_ui(self):
         # Widgets
-        self._txt_title = TextAttributeLineEdit(self.CLASS.title)
-        self._txt_author = TextAttributeLineEdit(self.CLASS.author)
-        self._txt_owner = TextAttributeLineEdit(self.CLASS.owner)
+        self._txt_title = TextAttributeLineEdit(attribute=self.CLASS.title)
+        self._txt_author = TextAttributeLineEdit(attribute=self.CLASS.author)
+        self._txt_owner = TextAttributeLineEdit(attribute=self.CLASS.owner)
         self._txt_date = QDateEdit()
         self._txt_date.setDisplayFormat('yyyy-MM-dd')
         self._txt_time = QTimeEdit()
         self._txt_time.setDisplayFormat('hh:mm:ss')
-        self._txt_timezone = TextAttributeLineEdit(self.CLASS.timezone)
-        self._txt_checksum = TextAttributeLineEdit(self.CLASS.checksum)
+        self._txt_timezone = TextAttributeLineEdit(attribute=self.CLASS.timezone)
+        self._txt_checksum = TextAttributeLineEdit(attribute=self.CLASS.checksum)
         self._txt_checksum.setReadOnly(True)
 
         # Layouts

@@ -6,9 +6,9 @@ Custom widgets
 
 # Third party modules.
 from qtpy.QtCore import QSize, Qt
-from qtpy.QtGui import \
-    (QWidget, QPushButton, QVBoxLayout, QSizePolicy, QPainter, QBrush,
-     QColorDialog)
+from qtpy.QtGui import QPainter, QBrush
+from qtpy.QtWidgets import \
+    QWidget, QPushButton, QVBoxLayout, QSizePolicy, QColorDialog
 
 # Local modules.
 

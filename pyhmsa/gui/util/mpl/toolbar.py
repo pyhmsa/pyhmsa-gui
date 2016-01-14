@@ -12,7 +12,7 @@ import six
 import numpy as np
 
 from qtpy.QtCore import Qt, Signal
-from qtpy.QtGui import \
+from qtpy.QtWidgets import \
     (QAction, QDialog, QComboBox, QVBoxLayout, QDialogButtonBox, QCheckBox,
      QFormLayout, QSlider, QLabel, QFileDialog, QSpinBox, QHBoxLayout,
      QMessageBox, QWidget, QButtonGroup, QRadioButton)

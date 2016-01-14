@@ -5,7 +5,7 @@ Image raster widgets
 # Standard library modules.
 
 # Third party modules.
-from qtpy.QtGui import \
+from qtpy.QtWidgets import \
     QSlider, QFormLayout, QHBoxLayout, QRadioButton, QSplitter, QSizePolicy
 from qtpy.QtCore import Qt, QAbstractTableModel, Signal
 

@@ -6,7 +6,8 @@ Calibration widgets
 import re
 
 # Third party modules.
-from qtpy.QtGui import QValidator, QComboBox, QStackedWidget
+from qtpy.QtGui import QValidator
+from qtpy.QtWidgets import QComboBox, QStackedWidget
 
 from pkg_resources import iter_entry_points #@UnresolvedImport
 

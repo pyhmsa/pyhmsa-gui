@@ -6,10 +6,10 @@ Periodic table of element dialog
 import math
 
 # Third party modules.
-from qtpy.QtGui import \
-    (QWidget, QDialog, QPushButton, QPainter, QGridLayout, QColor, QFont,
-     QLabel, QSizePolicy, QButtonGroup, QDialogButtonBox, QVBoxLayout,
-     QMessageBox)
+from qtpy.QtGui import QPainter, QColor, QFont
+from qtpy.QtWidgets import \
+    (QWidget, QDialog, QPushButton, QGridLayout, QLabel, QSizePolicy,
+     QButtonGroup, QDialogButtonBox, QVBoxLayout, QMessageBox)
 from qtpy.QtCore import Qt, QSize, Signal
 
 import six
@@ -332,7 +332,7 @@ class PeriodicTableDialog(QDialog):
 
 def run():
     import sys
-    from qtpy.QtGui import QApplication
+    from qtpy.QtWidgets import QApplication
 
     def selection():
         print('hello')

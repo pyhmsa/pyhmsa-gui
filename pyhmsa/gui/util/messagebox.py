@@ -11,7 +11,7 @@ except ImportError:
     from io import StringIO
 
 # Third party modules.
-from qtpy.QtGui import QMessageBox
+from qtpy.QtWidgets import QMessageBox
 
 # Local modules.
 

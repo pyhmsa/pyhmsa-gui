@@ -5,7 +5,7 @@ Analysis list widgets
 # Standard library modules.
 
 # Third party modules.
-from qtpy.QtGui import QSlider, QFormLayout
+from qtpy.QtWidgets import QSlider, QFormLayout
 from qtpy.QtCore import Qt
 
 # Local modules.

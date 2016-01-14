@@ -6,7 +6,7 @@ Specimen position condition widget
 from operator import methodcaller
 
 # Third party modules.
-from qtpy.QtGui import \
+from qtpy.QtWidgets import \
     (QHBoxLayout, QVBoxLayout, QLabel, QItemDelegate, QTableView,
      QToolBar, QMessageBox)
 from qtpy.QtCore import Qt, QAbstractTableModel, QModelIndex

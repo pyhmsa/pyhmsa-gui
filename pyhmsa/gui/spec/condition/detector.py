@@ -6,7 +6,7 @@ Detector widgets
 from operator import methodcaller
 
 # Third party modules.
-from qtpy.QtGui import \
+from qtpy.QtWidgets import \
     QComboBox, QToolBar, QMessageBox, QTableView, QItemDelegate
 from qtpy.QtCore import Qt, QAbstractTableModel, QModelIndex
 

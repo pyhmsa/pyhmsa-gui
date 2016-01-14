@@ -6,8 +6,9 @@ Widgets for parameters and attributes
 
 # Third party modules.
 from qtpy.QtGui import \
-    (QWidget, QLineEdit, QRegExpValidator, QValidator, QPushButton,
-     QVBoxLayout, QFormLayout)
+    QRegExpValidator, QValidator
+from qtpy.QtWidgets import \
+    QWidget, QLineEdit, QPushButton, QVBoxLayout, QFormLayout
 from qtpy.QtCore import QRegExp, Signal
 
 import six
@@ -25,7 +26,9 @@ from pyhmsa.gui.util.human import camelcase_to_words
 
 class _AttributeMixin(object):
 
-    def __init__(self, attribute):
+    def __init__(self, attribute, **kwargs):
+        super().__init__(**kwargs)
+
         self._attribute = attribute
 
         self.setAccessibleName(attribute.name)
@@ -33,9 +36,8 @@ class _AttributeMixin(object):
 
 class _AttributeLineEdit(QLineEdit, _AttributeMixin):
 
-    def __init__(self, attribute, *args, **kwargs):
-        QLineEdit.__init__(self, *args, **kwargs)
-        _AttributeMixin.__init__(self, attribute)
+    def __init__(self, attribute, **kwargs):
+        super().__init__(attribute=attribute, **kwargs)
 
         if attribute.is_required():
             pattern = QRegExp(r"^(?!\s*$).+")
@@ -52,6 +54,9 @@ class _AttributeLineEdit(QLineEdit, _AttributeMixin):
             self.setStyleSheet("background: pink")
 
 class TextAttributeLineEdit(_AttributeLineEdit):
+
+    def __init__(self, attribute, **kwargs):
+        super().__init__(attribute=attribute, **kwargs)
 
     def text(self):
         text = _AttributeLineEdit.text(self)
@@ -103,8 +108,8 @@ class NumericalAttributeLineEdit(_AttributeLineEdit):
         def fixup(self, text):
             return text
 
-    def __init__(self, attribute, *args, **kwargs):
-        _AttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+    def __init__(self, attribute, **kwargs):
+        super().__init__(attribute=attribute, **kwargs)
 
         self._format = '{0:g}'
 
@@ -190,8 +195,8 @@ class UnitAttributeLineEdit(_AttributeLineEdit):
         def fixup(self, text):
             return text
 
-    def __init__(self, attribute, valid_units=None, *args, **kwargs):
-        _AttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+    def __init__(self, attribute, valid_units=None, **kwargs):
+        super().__init__(attribute=attribute, **kwargs)
 
         self.setValidator(self._Validator(attribute, valid_units))
 
@@ -210,9 +215,8 @@ class AtomicNumberAttributePushButton(QPushButton, _AttributeMixin):
 
     selectionChanged = Signal()
 
-    def __init__(self, attribute, *args, **kwargs):
-        QPushButton.__init__(self, *args, **kwargs)
-        _AttributeMixin.__init__(self, attribute)
+    def __init__(self, attribute, **kwargs):
+        super().__init__(attribute=attribute, **kwargs)
 
         self.setText(str(None))
 
@@ -252,7 +256,7 @@ class ParameterWidget(QWidget):
     edited = Signal()
 
     def __init__(self, clasz, parent=None):
-        QWidget.__init__(self, parent)
+        super().__init__(parent)
         self.setAccessibleName(' '.join(camelcase_to_words(clasz.__name__)))
 
         # Variable

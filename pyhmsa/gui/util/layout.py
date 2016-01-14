@@ -5,7 +5,7 @@ Layout utilities
 # Standard library modules.
 
 # Third party modules.
-from qtpy.QtGui import QHBoxLayout, QFormLayout, QLayout
+from qtpy.QtWidgets import QHBoxLayout, QFormLayout, QLayout
 
 # Local modules.
 

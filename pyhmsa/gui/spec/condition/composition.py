@@ -7,9 +7,9 @@ from collections import OrderedDict
 from operator import methodcaller
 
 # Third party modules.
-from qtpy.QtGui import \
-    (QItemDelegate, QTableView, QToolBar, QMessageBox, QComboBox,
-     QLineEdit, QDoubleValidator)
+from qtpy.QtGui import QDoubleValidator
+from qtpy.QtWidgets import \
+    QItemDelegate, QTableView, QToolBar, QMessageBox, QComboBox, QLineEdit
 from qtpy.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 # Local modules.
