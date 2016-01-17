@@ -5,8 +5,7 @@ addons:
     packages:
     - ruby-dev
     - gcc
-    - python-pyqt4
-    - python-pyqt5
+    - python-qt4
 cache:
   directories:
   - $HOME/.pip-cache/
@@ -22,7 +21,6 @@ install:
 - python setup.py develop
 script:
 - QT_API=pyqt4 nosetests
-- QT_API=pyqt5 nosetests
 notifications:
   email: false
 before_deploy:
