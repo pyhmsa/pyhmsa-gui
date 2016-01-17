@@ -13,7 +13,8 @@ from pkg_resources import iter_entry_points #@UnresolvedImport
 
 # Local modules.
 from pyhmsa.gui.util.parameter import \
-    ParameterWidget, _AttributeLineEdit, TextAttributeLineEdit, UnitAttributeLineEdit, NumericalAttributeLineEdit
+    (ParameterWidget, _ParameterAttributeLineEdit, TextAttributeLineEdit,
+     UnitAttributeLineEdit, NumericalAttributeLineEdit)
 
 from pyhmsa.spec.condition.calibration import \
     (_Calibration, CalibrationConstant, CalibrationLinear,
@@ -164,7 +165,7 @@ class CalibrationLinearWidget(_CalibrationWidget):
             self._txt_gain.hasAcceptableInput() and \
             self._txt_offset.hasAcceptableInput()
 
-class _CoefficientsLineEdit(_AttributeLineEdit):
+class _CoefficientsLineEdit(_ParameterAttributeLineEdit):
 
     _PATTERN = re.compile(r'^(?P<coef>[\d\.]*)\s*(?P<x>[x]?)(?:[\^](?P<exp>\d*))?$')
 
@@ -226,7 +227,7 @@ class _CoefficientsLineEdit(_AttributeLineEdit):
             return text
 
     def __init__(self, attribute, *args, **kwargs):
-        _AttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+        _ParameterAttributeLineEdit.__init__(self, attribute, *args, **kwargs)
 
         self.setValidator(self._Validator())
 
@@ -242,13 +243,13 @@ class _CoefficientsLineEdit(_AttributeLineEdit):
             text = ''
         else:
             text = _CoefficientsLineEdit.write_coefficients(text)
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
     def text(self):
         if not self.hasAcceptableInput():
             raise ValueError('Invalid text')
 
-        text = _AttributeLineEdit.text(self)
+        text = _ParameterAttributeLineEdit.text(self)
         if len(text.strip()) == 0:
             return None
 
@@ -297,7 +298,7 @@ class CalibrationPolynomialWidget(_CalibrationWidget):
         return _CalibrationWidget.hasAcceptableInput(self) and \
             self._txt_coefficients.hasAcceptableInput()
 
-class _ExplicitLineEdit(_AttributeLineEdit):
+class _ExplicitLineEdit(_ParameterAttributeLineEdit):
 
     _PATTERN = re.compile(r'[,;]')
 
@@ -315,7 +316,7 @@ class _ExplicitLineEdit(_AttributeLineEdit):
             return text
 
     def __init__(self, attribute, *args, **kwargs):
-        _AttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+        _ParameterAttributeLineEdit.__init__(self, attribute, *args, **kwargs)
 
         self.setValidator(self._Validator())
 
@@ -331,13 +332,13 @@ class _ExplicitLineEdit(_AttributeLineEdit):
             text = ''
         else:
             text = ','.join(map(str, text))
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
     def text(self):
         if not self.hasAcceptableInput():
             raise ValueError('Invalid text')
 
-        text = _AttributeLineEdit.text(self)
+        text = _ParameterAttributeLineEdit.text(self)
         if len(text.strip()) == 0:
             return None
 

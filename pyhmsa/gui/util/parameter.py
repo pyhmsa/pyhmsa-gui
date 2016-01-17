@@ -24,20 +24,26 @@ from pyhmsa.gui.util.human import camelcase_to_words
 
 # Globals and constants variables.
 
-class _AttributeMixin(object):
+class _ParameterAttributeMixin(object):
 
-    def __init__(self, attribute, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        self._attribute = None
 
+    def parameterAttribute(self):
+        return self._attribute
+
+    def setParameterAttribute(self, attribute):
         self._attribute = attribute
-
         self.setAccessibleName(attribute.name)
         self.setToolTip(attribute.__doc__.title())
 
-class _AttributeLineEdit(QLineEdit, _AttributeMixin):
+class _ParameterAttributeLineEdit(QLineEdit, _ParameterAttributeMixin):
 
-    def __init__(self, attribute, **kwargs):
-        super().__init__(attribute=attribute, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def setParameterAttribute(self, attribute):
+        _ParameterAttributeMixin.setParameterAttribute(self, attribute)
 
         if attribute.is_required():
             pattern = QRegExp(r"^(?!\s*$).+")
@@ -53,13 +59,14 @@ class _AttributeLineEdit(QLineEdit, _AttributeMixin):
         else:
             self.setStyleSheet("background: pink")
 
-class TextAttributeLineEdit(_AttributeLineEdit):
+class TextAttributeLineEdit(_ParameterAttributeLineEdit):
 
-    def __init__(self, attribute, **kwargs):
-        super().__init__(attribute=attribute, **kwargs)
+    def __init__(self, attribute, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
     def text(self):
-        text = _AttributeLineEdit.text(self)
+        text = _ParameterAttributeLineEdit.text(self)
         if len(text.strip()) == 0:
             return None
         return text
@@ -67,9 +74,9 @@ class TextAttributeLineEdit(_AttributeLineEdit):
     def setText(self, text):
         if text is None:
             text = ''
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
-class NumericalAttributeLineEdit(_AttributeLineEdit):
+class NumericalAttributeLineEdit(_ParameterAttributeLineEdit):
 
     class _Validator(QValidator):
 
@@ -149,23 +156,23 @@ class NumericalAttributeLineEdit(_AttributeLineEdit):
     def text(self):
         if not self.hasAcceptableInput():
             raise ValueError('Invalid text')
-        return self._parse(_AttributeLineEdit.text(self))
+        return self._parse(_ParameterAttributeLineEdit.text(self))
 
     def setText(self, value):
         if isinstance(value, six.string_types):
             value = self._parse(value)
 
         if value is None:
-            return _AttributeLineEdit.setText(self, '')
+            return _ParameterAttributeLineEdit.setText(self, '')
 
         text = self._format.format(value)
         unit = getattr(value, 'unit', None)
         if unit is not None:
             text += ' ' + unit
 
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
-class UnitAttributeLineEdit(_AttributeLineEdit):
+class UnitAttributeLineEdit(_ParameterAttributeLineEdit):
 
     class _Validator(QValidator):
 
@@ -201,7 +208,7 @@ class UnitAttributeLineEdit(_AttributeLineEdit):
         self.setValidator(self._Validator(attribute, valid_units))
 
     def text(self):
-        text = _AttributeLineEdit.text(self)
+        text = _ParameterAttributeLineEdit.text(self)
         if len(text.strip()) == 0:
             return None
         return text
@@ -209,9 +216,9 @@ class UnitAttributeLineEdit(_AttributeLineEdit):
     def setText(self, text):
         if text is None:
             text = ''
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
-class AtomicNumberAttributePushButton(QPushButton, _AttributeMixin):
+class AtomicNumberAttributePushButton(QPushButton, _ParameterAttributeMixin):
 
     selectionChanged = Signal()
 
