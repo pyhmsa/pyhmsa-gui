@@ -115,8 +115,9 @@ class NumericalAttributeLineEdit(_ParameterAttributeLineEdit):
         def fixup(self, text):
             return text
 
-    def __init__(self, attribute, **kwargs):
-        super().__init__(attribute=attribute, **kwargs)
+    def __init__(self, attribute, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self._format = '{0:g}'
 
@@ -202,8 +203,9 @@ class UnitAttributeLineEdit(_ParameterAttributeLineEdit):
         def fixup(self, text):
             return text
 
-    def __init__(self, attribute, valid_units=None, **kwargs):
-        super().__init__(attribute=attribute, **kwargs)
+    def __init__(self, attribute, valid_units=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self.setValidator(self._Validator(attribute, valid_units))
 
@@ -222,8 +224,9 @@ class AtomicNumberAttributePushButton(QPushButton, _ParameterAttributeMixin):
 
     selectionChanged = Signal()
 
-    def __init__(self, attribute, **kwargs):
-        super().__init__(attribute=attribute, **kwargs)
+    def __init__(self, attribute, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self.setText(str(None))
 

@@ -227,7 +227,8 @@ class _CoefficientsLineEdit(_ParameterAttributeLineEdit):
             return text
 
     def __init__(self, attribute, *args, **kwargs):
-        _ParameterAttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self.setValidator(self._Validator())
 
@@ -316,7 +317,8 @@ class _ExplicitLineEdit(_ParameterAttributeLineEdit):
             return text
 
     def __init__(self, attribute, *args, **kwargs):
-        _ParameterAttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self.setValidator(self._Validator())
 
