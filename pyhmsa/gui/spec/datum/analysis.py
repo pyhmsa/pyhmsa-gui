@@ -146,7 +146,7 @@ class Analysis1DGraphWidget(_DatumFigureWidget):
         # Extract data and labels
         xy = datum.get_xy()
         xlabel = datum.get_xlabel()
-        ylabel = datum.get_xlabel()
+        ylabel = datum.get_ylabel()
 
         # Draw
         if self._artist is None:
