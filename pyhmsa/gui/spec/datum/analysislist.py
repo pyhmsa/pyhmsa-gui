@@ -27,7 +27,7 @@ class _AnalysisListWidget(_DatumWidget):
 
     def _init_ui(self):
         # Widgets
-        self._slider = QSlider(Qt.Orientation.Horizontal)
+        self._slider = QSlider(Qt.Horizontal)
         self._slider.setTickPosition(QSlider.TicksBelow)
 
         self._wdg_analysis = self._create_analysis_widget()
