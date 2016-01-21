@@ -6,10 +6,9 @@ import unittest
 import logging
 
 # Third party modules.
-from qtpy.QtTest import QTest
 
 # Local modules.
-from pyhmsa.gui.util.testcase import TestCaseQApp
+from pyhmsa.gui.util.testcase import TestCaseQApp, QTest
 from pyhmsa.gui.spec.header import HeaderWidget
 
 # Globals and constants variables.
