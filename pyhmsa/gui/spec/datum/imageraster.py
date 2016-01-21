@@ -346,8 +346,9 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
         _DatumWidget.setDatum(self, datum)
         self._datum = datum
 
-        self._sld_start.setMaximum(datum.channels - 1)
-        self._sld_end.setMaximum(datum.channels - 1)
+        maximum = datum.channels - 1 if datum is not None else 0
+        self._sld_start.setMaximum(maximum)
+        self._sld_end.setMaximum(maximum)
 
         self._update_data()
 

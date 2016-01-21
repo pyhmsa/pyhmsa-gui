@@ -58,7 +58,9 @@ class _AnalysisListWidget(_DatumWidget):
     def setDatum(self, datum):
         _DatumWidget.setDatum(self, datum)
         self._datum = datum
-        self._slider.setMaximum(datum.analysis_count - 1)
+
+        maximum = datum.analysis_count - 1 if datum is not None else 0
+        self._slider.setMaximum(maximum)
         self._slider.setValue(0)
         self._onSlide(0)
 
