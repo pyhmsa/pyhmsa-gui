@@ -4,6 +4,7 @@
 # Standard library modules.
 import unittest
 import logging
+import warnings
 
 # Third party modules.
 
@@ -25,8 +26,10 @@ class TestModule(TestCaseQApp):
         icon = getIcon('document-new')
         self.assertFalse(icon.isNull())
 
-        icon = getIcon('document-newwwww')
-        self.assertTrue(icon.isNull())
+        with warnings.catch_warnings(record=True) as ws:
+            icon = getIcon('document-newwwww')
+            self.assertTrue(icon.isNull())
+            self.assertEqual(1, len(ws))
 
 if __name__ == '__main__': #pragma: no cover
     logging.getLogger().setLevel(logging.DEBUG)
