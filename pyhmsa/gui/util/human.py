@@ -14,4 +14,4 @@ _CAMELCASE_TO_WORDS_PATTERN = re.compile('([A-Z][a-z0-9]*)')
 
 def camelcase_to_words(text):
     words = _CAMELCASE_TO_WORDS_PATTERN.split(text)
-    return [word for word in words if word]
+    return tuple(word for word in words if word)
