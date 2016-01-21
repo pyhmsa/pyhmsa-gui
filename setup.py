@@ -151,6 +151,7 @@ setup(name='pyHMSA-gui',
              'Analysis2D.Graph = pyhmsa.gui.spec.datum.analysis:Analysis2DGraphWidget',
 
              'AnalysisList0D.Table = pyhmsa.gui.spec.datum.analysislist:AnalysisList0DTableWidget',
+             'AnalysisList0D.Graph = pyhmsa.gui.spec.datum.analysislist:AnalysisList0DGraphWidget',
              'AnalysisList1D.Table = pyhmsa.gui.spec.datum.analysislist:AnalysisList1DTableWidget',
              'AnalysisList1D.Graph = pyhmsa.gui.spec.datum.analysislist:AnalysisList1DGraphWidget',
              'AnalysisList2D.Table = pyhmsa.gui.spec.datum.analysislist:AnalysisList2DTableWidget',

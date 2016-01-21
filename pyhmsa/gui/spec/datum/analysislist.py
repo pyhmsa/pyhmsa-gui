@@ -8,11 +8,16 @@ Analysis list widgets
 from PySide.QtGui import QSlider, QFormLayout
 from PySide.QtCore import Qt
 
+from matplotlib.figure import Figure
+
+import numpy as np
+
 # Local modules.
-from pyhmsa.gui.spec.datum.datum import _DatumWidget
+from pyhmsa.gui.spec.datum.datum import _DatumWidget, _DatumFigureWidget
 from pyhmsa.gui.spec.datum.analysis import \
     (Analysis0DTableWidget, Analysis1DGraphWidget, Analysis1DTableWidget,
      Analysis2DGraphWidget, Analysis2DTableWidget)
+from pyhmsa.gui.util.mpl.toolbar import NavigationToolbarQT
 
 from pyhmsa.spec.datum.analysislist import \
     AnalysisList0D, AnalysisList1D, AnalysisList2D
@@ -70,6 +75,44 @@ class AnalysisList0DTableWidget(_AnalysisListWidget):
 
     def _create_analysis_widget(self):
         return Analysis0DTableWidget(self.controller)
+
+class AnalysisList0DGraphWidget(_DatumFigureWidget):
+
+    def __init__(self, controller, datum=None, parent=None):
+        _DatumFigureWidget.__init__(self, AnalysisList0D, controller, datum, parent)
+
+    def _create_figure(self):
+        fig = Figure((5.0, 4.0), dpi=100)
+        self._ax = None
+        self._artist = None
+        return fig
+
+    def _create_toolbar(self, canvas):
+        return NavigationToolbarQT(canvas, self.parent())
+
+    def _draw_figure(self, fig, datum):
+        if datum is None:
+            self._ax = None
+            self._artist = None
+            return
+
+        # Extract data and labels
+        xs = np.arange(len(datum))
+        ys = datum[:, 0]
+        xlabel = 'Analysis'
+        ylabel = datum.get_ylabel()
+
+        # Draw
+        if self._artist is None:
+            self._ax = fig.add_subplot("111")
+            self._artist, = self._ax.plot(xs, ys, zorder=1)
+        else:
+            self._artist.set_data((xs, ys))
+            self._ax.relim()
+            self._ax.autoscale(tight=True)
+
+        self._ax.set_xlabel(xlabel)
+        self._ax.set_ylabel(ylabel)
 
 class AnalysisList1DTableWidget(_AnalysisListWidget):
 
