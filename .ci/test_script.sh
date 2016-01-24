@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -o pipefail -u
+set -e
 
 
 python --version
