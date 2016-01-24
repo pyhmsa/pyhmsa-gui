@@ -17,7 +17,8 @@ conda env list
 testenv=testenv$PYTHON_VERSION
 echo "Test environment: $testenv"
 
-hasenv=`conda env list | grep "$testenv"`
+conda env list | grep "$testenv"
+hasenv=`conda env list | grep "testenv3.4"`
 echo "Has environment: $hasenv"
 
 requirements=`cat requirements.txt | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
