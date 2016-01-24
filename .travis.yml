@@ -8,9 +8,9 @@ cache:
 
 matrix:
   include:
-#    - python: "3.5"
-#      env: QT_API=pyqt5
-#      os: linux
+    - python: "3.5"
+      env: QT_API=pyqt5
+      os: linux
     - python: "3.5"
       env: QT_API=pyqt4
       os: linux
@@ -53,8 +53,10 @@ install:
 - pip install qtpy pyhmsa
 
 script:
-- echo "Hello"
-#- bash .ci/test_script.sh
+- python --version
+- python -c "import numpy; print('numpy %s' % numpy.__version__)"
+- echo $QT_API
+- nosetests
 
 #before_install:
 #- pip install --upgrade pip
