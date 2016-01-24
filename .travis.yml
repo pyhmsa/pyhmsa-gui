@@ -36,7 +36,7 @@ install:
 
 - export TESTENV="testenv_"$TRAVIS_PYTHON_VERSION"_"$QT_API
 - if [[ `conda env list` != *"$TESTENV"* ]]; then
-    conda create -q -n $TESTENV python=$PYTHON_VERSION;
+    conda create -q -n $TESTENV python=$TRAVIS_PYTHON_VERSION;
   fi
 - source activate $TESTENV
 
