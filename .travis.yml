@@ -24,6 +24,8 @@ install:
 - source activate testenv
 - pip install qtpy pyhmsa
 - python setup.py develop
+- pip list
+- conda list
 
 script:
 - QT_API=pyqt4 nosetests
