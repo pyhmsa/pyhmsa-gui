@@ -3,3 +3,5 @@ pyhmsa
 matplotlib
 six
 qtpy
+nose
+coverage
