@@ -31,5 +31,9 @@ fi
 source activate $testenv
 echo "Conda environment $testenv activated"
 
+# Install requirements
 conda install $requirements
 pip install qtpy pyhmsa
+
+# Install package
+python setup.py develop

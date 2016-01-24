@@ -10,14 +10,11 @@ env:
   matrix:
     - PYTHON_VERSION="3.4"
 
-before_install:
-- source .ci/before_install.sh
-
 install:
-- python setup.py develop
+- source .ci/install.sh
 
 script:
-- QT_API=pyqt4 nosetests
+- bash .ci/test_script.sh
 
 #before_install:
 #- pip install --upgrade pip
