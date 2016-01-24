@@ -8,7 +8,12 @@ if [ ! -d "$HOME/miniconda" ]; then
     conda config --set always_yes yes --set changeps1 no
     conda update -q conda
     conda info -a
+else
+    export PATH="$HOME/miniconda/bin:$PATH"
+    conda update -q conda
+    conda info -a
 fi
+
 
 testenv=testenv$TRAVIS_PYTHON_VERSION
 hasenv=`conda env list | grep $testenv`
