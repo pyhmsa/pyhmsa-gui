@@ -14,16 +14,18 @@ conda info -a
 conda env list
 
 # Setup variables
-testenv=testenv$TRAVIS_PYTHON_VERSION
+testenv=testenv$PYTHON_VERSION
 echo "Test environment: $testenv"
 
 hasenv=`conda env list | grep "$testenv"`
 echo "Has environment: $hasenv"
 
 requirements=`cat requirements.txt | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
+echo "Conda requirements: $requirements"
 
 if [ -n "$hasenv" ]; then
-    conda create -q -n $testenv python=$TRAVIS_PYTHON_VERSION
+    conda create -q -n $testenv python=$PYTHON_VERSION
+    echo "Conda environment $testenv created"
 fi
 
 source activate $testenv
