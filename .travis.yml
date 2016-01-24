@@ -34,6 +34,7 @@ install:
     conda update -q conda;
   fi
 
+- ls $HOME/miniconda/bin
 - export TESTENV="testenv_"$TRAVIS_PYTHON_VERSION"_"$QT_API
 - if [[ `conda env list` != *"$TESTENV"* ]]; then
     conda create -q -n $TESTENV python=$TRAVIS_PYTHON_VERSION;
@@ -51,6 +52,7 @@ install:
   fi
 - conda install $REQUIREMENTS
 - pip install qtpy pyhmsa
+- python setup.py install
 
 script:
 - python --version
