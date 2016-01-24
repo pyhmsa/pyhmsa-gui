@@ -18,6 +18,14 @@ before_install:
 - conda update -q conda
 - conda info -a
 
+install:
+- conda create -q -n testenv python=$TRAVIS_PYTHON_VERSION numpy matplotlib six qtpy
+- source activate testenv
+- python setup.py develop
+
+script:
+- nosetests
+
 #before_install:
 #- pip install --upgrade pip
 #- pip install --cache-dir $HOME/.pip-cache codecov
