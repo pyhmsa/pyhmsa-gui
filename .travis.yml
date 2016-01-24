@@ -41,8 +41,10 @@ install:
     export REQUIREMENTS=$REQUIREMENTS" qt pyside";
   fi
 - conda install $REQUIREMENTS
+- which pip
 - pip install qtpy pyhmsa
-- python setup.py install
+- which python
+- python setup.py develop
 - ls -la $HOME/miniconda/envs/testenv/lib/python3.5/site-packages
 - ls -la $HOME/miniconda/envs/testenv/lib/python3.5/site-packages/pyhmsa
 - ls -la $HOME/miniconda/envs/testenv/lib/python3.5/site-packages/pyhmsa/util
