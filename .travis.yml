@@ -17,9 +17,10 @@ before_install:
 - conda config --set always_yes yes --set changeps1 no
 - conda update -q conda
 - conda info -a
+- conda list
 
 install:
-- conda create -q -n testenv python=$TRAVIS_PYTHON_VERSION numpy matplotlib six pyqt4
+- conda create -q -n testenv python=$TRAVIS_PYTHON_VERSION numpy matplotlib six pyqt
 - source activate testenv
 - pip install qtpy pyhmsa
 - python setup.py develop
