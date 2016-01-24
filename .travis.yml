@@ -2,10 +2,6 @@ sudo: false
 
 language: python
 
-cache:
-  directories:
-  - $HOME/miniconda
-
 matrix:
   include:
     - python: "3.5"
@@ -21,24 +17,17 @@ before_install:
 - sleep 3 # give xvfb some time to start
 
 install:
-- if [ ! -a "$HOME/miniconda/bin/conda" ]; then
-    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    bash miniconda.sh -b -f -p $HOME/miniconda;
-    export PATH="$HOME/miniconda/bin:$PATH";
-    hash -r;
-    conda config --set always_yes yes --set changeps1 no;
-    conda update -q conda;
-    conda install -n root _license;
-  else
-    export PATH="$HOME/miniconda/bin:$PATH";
-    conda update -q conda;
-  fi
+- wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+- bash miniconda.sh -b -f -p $HOME/miniconda;
+- export PATH="$HOME/miniconda/bin:$PATH";
+- hash -r;
+- conda config --set always_yes yes --set changeps1 no;
+- conda update -q conda;
+- conda install -n root _license;
 
 - ls $HOME/miniconda/bin
 - export TESTENV="testenv_"$TRAVIS_PYTHON_VERSION"_"$QT_API
-- if [[ `conda env list` != *"$TESTENV"* ]]; then
-    conda create -q -n $TESTENV python=$TRAVIS_PYTHON_VERSION;
-  fi
+- conda create -q -n $TESTENV python=$TRAVIS_PYTHON_VERSION;
 - source activate $TESTENV
 
 - export REQUIREMENTS=`cat requirements.txt | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
@@ -51,7 +40,8 @@ install:
     export REQUIREMENTS=$REQUIREMENTS" qt pyside";
   fi
 - conda install $REQUIREMENTS
-- pip install qtpy pyhmsa
+- pip install qtpy
+- pip install git@github.com:pyhmsa/pyhmsa.git
 - python setup.py install
 
 script:
