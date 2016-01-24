@@ -1,19 +1,15 @@
 #!/bin/bash
 
-if [ ! -d "$HOME/miniconda" ]; then
-    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-    bash miniconda.sh -b -f -p $HOME/miniconda
-    export PATH="$HOME/miniconda/bin:$PATH"
-    hash -r
-    conda config --set always_yes yes --set changeps1 no
-    conda update -q conda
-    conda info -a
-else
-    export PATH="$HOME/miniconda/bin:$PATH"
-    conda update -q conda
-    conda info -a
-fi
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+bash miniconda.sh -b -f -p $HOME/miniconda
+export PATH="$HOME/miniconda/bin:$PATH"
+hash -r
+conda config --set always_yes yes --set changeps1 no
+conda update -q conda
 
+# Echo info about conda
+conda info -a
+conda env list
 
 testenv=testenv$TRAVIS_PYTHON_VERSION
 hasenv=`conda env list | grep $testenv`
