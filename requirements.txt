@@ -5,3 +5,4 @@ six
 qtpy
 nose
 coverage
+setuptools
