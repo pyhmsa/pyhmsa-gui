@@ -54,7 +54,7 @@ install:
   fi
 
 - if [[ "$BUILD" == "conda" ]]; then
-    export REQUIREMENTS=`cat $REQUIREMENTS | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
+    export REQUIREMENTS=`echo $REQUIREMENTS | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
     conda install $REQUIREMENTS;
     pip install qtpy pyhmsa;
   elif [[ "$BUILD" == "pip" ]]; then
