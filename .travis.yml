@@ -19,7 +19,7 @@ matrix:
     - python: "3.5"
       env: QT_API=pyqt4
       os: linux
-    - python: "2.7"
+    - python: "3.4"
       env: QT_API=pyside
       os: linux
 
@@ -47,7 +47,7 @@ install:
   elif [[ "$QT_API" == "pyqt4" ]]; then
     export REQUIREMENTS=$REQUIREMENTS" qt pyqt";
   elif [[ "$QT_API" == "pyside" ]]; then
-    export REQUIREMENTS=$REQUIREMENTS" qt pyside";
+    pip install pyside;
   fi
 - conda install $REQUIREMENTS
 - pip install qtpy pyhmsa codecov
