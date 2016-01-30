@@ -43,22 +43,24 @@ install:
     source activate testenv;
   fi
   
-- export REQUIREMENTS=`cat requirements.txt`
-- if [[ "$QT_API" == "pyqt5" ]]; then
+- export REQUIREMENTS=`cat requirements.txt | tr '\n' ' '`
+- if [[ "$BUILD" == "conda" && "$QT_API" == "pyqt5" ]]; then
     conda config --add channels spyder-ide;
     export REQUIREMENTS=$REQUIREMENTS" qt5 pyqt5";
-  elif [[ "$QT_API" == "pyqt4" ]]; then
+  elif [[ "$BUILD" == "conda" && "$QT_API" == "pyqt4" ]]; then
     export REQUIREMENTS=$REQUIREMENTS" qt pyqt";
-  elif [[ "$QT_API" == "pyside" ]]; then
+  elif [[ "$BUILD" == "pip" && "$QT_API" == "pyside" ]]; then
     export REQUIREMENTS=$REQUIREMENTS" pyside";
   fi
 
 - if [[ "$BUILD" == "conda" ]]; then
-    export REQUIREMENTS=`echo $REQUIREMENTS | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
+    export REQUIREMENTS=`echo $REQUIREMENTS | sed 's/pyhmsa//g' | sed 's/qtpy//g'`;
+    echo $REQUIREMENTS;
     conda install $REQUIREMENTS;
     pip install qtpy pyhmsa;
   elif [[ "$BUILD" == "pip" ]]; then
     pip install --cache-dir $HOME/.pip-cache --upgrade pip codecov;
+    echo $REQUIREMENTS;
     pip install --cache-dir $HOME/.pip-cache --upgrade $REQUIREMENTS;
   fi
   
