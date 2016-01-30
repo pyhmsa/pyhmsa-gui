@@ -10,17 +10,19 @@ addons:
 
 cache:
   apt: true
+  directories:
+  - $HOME/.pip-cache/
 
 matrix:
   include:
     - python: "3.5"
-      env: QT_API=pyqt5
+      env: QT_API=pyqt5 BUILD=conda
       os: linux
     - python: "3.5"
-      env: QT_API=pyqt4
+      env: QT_API=pyqt4 BUILD=conda
       os: linux
     - python: "3.4"
-      env: QT_API=pyside
+      env: QT_API=pyside BUILD=pip
       os: linux
 
 before_install:
@@ -29,28 +31,37 @@ before_install:
 - sleep 3
 
 install:
-- wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-- bash miniconda.sh -b -f -p $HOME/miniconda;
-- export PATH="$HOME/miniconda/bin:$PATH";
-- hash -r;
-- conda config --set always_yes yes --set changeps1 no;
-- conda update -q conda;
-- conda install -n root _license;
-
-- conda create -q -n testenv python=$TRAVIS_PYTHON_VERSION;
-- source activate testenv
-
-- export REQUIREMENTS=`cat requirements.txt | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
+- if [[ "$BUILD" == "conda" ]]; then
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    bash miniconda.sh -b -f -p $HOME/miniconda;
+    export PATH="$HOME/miniconda/bin:$PATH";
+    hash -r;
+    conda config --set always_yes yes --set changeps1 no;
+    conda update -q conda;
+    conda install -n root _license;
+    conda create -q -n testenv python=$TRAVIS_PYTHON_VERSION;
+    source activate testenv;
+  fi
+  
+- export REQUIREMENTS=`cat requirements.txt`
 - if [[ "$QT_API" == "pyqt5" ]]; then
     conda config --add channels spyder-ide;
     export REQUIREMENTS=$REQUIREMENTS" qt5 pyqt5";
   elif [[ "$QT_API" == "pyqt4" ]]; then
     export REQUIREMENTS=$REQUIREMENTS" qt pyqt";
   elif [[ "$QT_API" == "pyside" ]]; then
-    pip install pyside;
+    export REQUIREMENTS=$REQUIREMENTS" pyside";
   fi
-- conda install $REQUIREMENTS
-- pip install qtpy pyhmsa codecov
+
+- if [[ "$BUILD" == "conda" ]]; then
+    export REQUIREMENTS=`cat $REQUIREMENTS | tr '\n' ' ' | sed 's/pyhmsa//g' | sed 's/qtpy//g'`
+    conda install $REQUIREMENTS;
+    pip install qtpy pyhmsa;
+  elif [[ "$BUILD" == "pip" ]]; then
+    pip install --cache-dir $HOME/.pip-cache --upgrade pip codecov;
+    pip install --cache-dir $HOME/.pip-cache --upgrade $REQUIREMENTS;
+  fi
+  
 - python setup.py develop
 
 script:
