@@ -11,6 +11,7 @@ from subprocess import check_call
 from setuptools import setup, find_packages
 
 # Local modules.
+import versioneer
 
 # Globals and constants variables.
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -66,15 +67,15 @@ class bdist_deb(_bdist_fpm):
     def run(self):
         self._run('deb')
 
-with open(os.path.join(BASEDIR, 'VERSION')) as version_file:
-    version = version_file.read().strip()
-
 # Get the long description from the relevant file
 with open('README.rst', 'r') as f:
     long_description = f.read()
 
+cmdclass = versioneer.get_cmdclass()
+cmdclass['bdist_deb'] = bdist_deb
+
 setup(name='pyHMSA-gui',
-      version=version,
+      version=versioneer.get_version(),
       description='Graphical components to represent HMSA specification',
       long_description=long_description,
 
@@ -104,6 +105,8 @@ setup(name='pyHMSA-gui',
 
       setup_requires=['nose', 'coverage'],
       install_requires=['pyHMSA', 'qtpy', 'matplotlib', 'numpy', 'six', 'setuptools'],
+
+      test_suite='nose.collector',
 
       zip_safe=True,
 
@@ -164,7 +167,5 @@ setup(name='pyHMSA-gui',
              ],
          },
 
-      cmdclass={'bdist_deb': bdist_deb},
-
-      test_suite='nose.collector',
+      cmdclass=cmdclass,
      )
