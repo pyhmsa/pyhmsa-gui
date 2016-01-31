@@ -8,8 +8,8 @@ import glob
 import warnings
 
 # Third party modules.
-from PySide.QtCore import QResource
-from PySide.QtGui import QIcon
+from qtpy.QtCore import QResource
+from qtpy.QtGui import QIcon
 
 import pkg_resources
 

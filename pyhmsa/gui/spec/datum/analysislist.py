@@ -5,8 +5,8 @@ Analysis list widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QSlider, QFormLayout
-from PySide.QtCore import Qt
+from qtpy.QtWidgets import QSlider, QFormLayout
+from qtpy.QtCore import Qt
 
 from matplotlib.figure import Figure
 
@@ -32,7 +32,7 @@ class _AnalysisListWidget(_DatumWidget):
 
     def _init_ui(self):
         # Widgets
-        self._slider = QSlider(Qt.Orientation.Horizontal)
+        self._slider = QSlider(Qt.Horizontal)
         self._slider.setTickPosition(QSlider.TicksBelow)
 
         self._wdg_analysis = self._create_analysis_widget()
@@ -63,7 +63,9 @@ class _AnalysisListWidget(_DatumWidget):
     def setDatum(self, datum):
         _DatumWidget.setDatum(self, datum)
         self._datum = datum
-        self._slider.setMaximum(datum.analysis_count - 1)
+
+        maximum = datum.analysis_count - 1 if datum is not None else 0
+        self._slider.setMaximum(maximum)
         self._slider.setValue(0)
         self._onSlide(0)
 

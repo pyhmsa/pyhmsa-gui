@@ -1,35 +1,90 @@
 sudo: false
+
 language: python
+
 addons:
   apt:
     packages:
     - ruby-dev
     - gcc
+
 cache:
+  apt: true
   directories:
   - $HOME/.pip-cache/
-python:
-- '2.7'
-- '3.4'
+
+matrix:
+  include:
+    - python: "3.5"
+      env: QT_API=pyqt5 BUILD=conda
+      os: linux
+    - python: "3.5"
+      env: QT_API=pyqt4 BUILD=conda
+      os: linux
+    - python: "3.4"
+      env: QT_API=pyside BUILD=pip
+      os: linux
+
 before_install:
-- pip install --upgrade pip
-- pip install --cache-dir $HOME/.pip-cache codecov
-- gem install fpm
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
+- sleep 3
+
 install:
-- pip install -v -v -v --cache-dir $HOME/.pip-cache -r requirements.txt
+- if [[ "$BUILD" == "conda" ]]; then
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+    bash miniconda.sh -b -f -p $HOME/miniconda;
+    export PATH="$HOME/miniconda/bin:$PATH";
+    hash -r;
+    conda config --set always_yes yes --set changeps1 no;
+    conda update -q conda;
+    conda install -n root _license;
+    conda create -q -n testenv python=$TRAVIS_PYTHON_VERSION;
+    source activate testenv;
+  fi
+  
+- export REQUIREMENTS=`cat requirements.txt | tr '\n' ' '`
+- if [[ "$BUILD" == "conda" && "$QT_API" == "pyqt5" ]]; then
+    conda config --add channels spyder-ide;
+    export REQUIREMENTS=$REQUIREMENTS" qt5 pyqt5";
+  elif [[ "$BUILD" == "conda" && "$QT_API" == "pyqt4" ]]; then
+    export REQUIREMENTS=$REQUIREMENTS" qt pyqt";
+  elif [[ "$BUILD" == "pip" && "$QT_API" == "pyside" ]]; then
+    export REQUIREMENTS=$REQUIREMENTS" pyside";
+  fi
+
+- if [[ "$BUILD" == "conda" ]]; then
+    export REQUIREMENTS=`echo $REQUIREMENTS | sed 's/pyhmsa//g' | sed 's/qtpy//g'`;
+    echo $REQUIREMENTS;
+    conda install $REQUIREMENTS;
+    pip install qtpy pyhmsa;
+  elif [[ "$BUILD" == "pip" ]]; then
+    pip install --cache-dir $HOME/.pip-cache --upgrade pip codecov;
+    echo $REQUIREMENTS;
+    pip install --cache-dir $HOME/.pip-cache --upgrade $REQUIREMENTS;
+  fi
+  
 - python setup.py develop
+
 script:
 - nosetests
+
+after_success:
+- codecov
+
 notifications:
   email: false
+
 before_deploy:
+- gem install fpm
 - python setup.py bdist_deb
+
 deploy:
   - provider: pypi
     user: philippe.pinard
     password:
       secure: hJP3Ghy7+SMGczbrMSt9oMFimM4BbvkK+g4dnRshYu96LZ6vdfeX34rBtySH7mGEj4yoJ2+Bh0oDzsOy/rPQvTwCF4R00Zad8lExFarNuZuYS5v3+YALGzwvGUjsLIuboP1AkGDZ+okEgxNkB2sGmJudqklimVpO0lc1heGnkmnjwcrMJyliejARM68bep+1gtIbpCQZDpeLUjvTzve3yasY8kqY0Pe0RjqXcLfthL9GEyHSQldLKC8L0cQo4eGgb4aN6LffesNsazUCiODjVNlaBLuDWRMsLprYkxt9XQjrHVLK812zSGmBxm3/EKK53TpYzLXgw47tFOBjcgBZSv76//X3N9jzpj2aaKMdNnh9cygNNRFJioxC2wt9y3Z6TvMiydwD+Y7CAAv9fe03CYYlv07OVgrjBGivAdzYiqid9GQaUrSgFR5uX2+1hMeKjtxrwRvVDpH1sDRvUhSxbjxCJuNgCgZfvKrGxVd1xBFhQHu2t0ZDJQR1/FS/Q3I2mi8i4bECtp3VKnFgiUIBNn0KY8QXqwGxzPXpiKDzKLMDN5xZxPAjEc6UjC5k6pndxWXYQ6mMAXxnCgY2WJmkWwlLtN6vgz2FEAtTj2fAV132MXvu3Z+WAamsgSXHTKSKv3vtEyYR0pjaOf/ti7l+3PZbKNdV033Nb+QS+TWF01s=
-    distributions: sdist bdist_wheel
+    distributions: sdist
     on:
       tags: true
       repo: pyhmsa/pyhmsa-gui

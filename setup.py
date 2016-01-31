@@ -93,17 +93,17 @@ setup(name='pyHMSA-gui',
         'Intended Audience :: Science/Research',
         'Operating System :: OS Independent',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Scientific/Engineering :: Physics',
         ],
 
       packages=find_packages(),
       package_data={'pyhmsa.gui.util': ['icons/*.rcc']},
 
-      install_requires=['pyHMSA', 'PySide', 'matplotlib', 'numpy', 'six'],
+      setup_requires=['nose', 'coverage'],
+      install_requires=['pyHMSA', 'qtpy', 'matplotlib', 'numpy', 'six', 'setuptools'],
 
       zip_safe=True,
 
@@ -165,4 +165,6 @@ setup(name='pyHMSA-gui',
          },
 
       cmdclass={'bdist_deb': bdist_deb},
+
+      test_suite='nose.collector',
      )

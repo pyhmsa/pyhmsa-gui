@@ -7,10 +7,10 @@ from collections import OrderedDict
 from operator import methodcaller
 
 # Third party modules.
-from PySide.QtGui import \
-    (QItemDelegate, QTableView, QToolBar, QMessageBox, QComboBox,
-     QLineEdit, QDoubleValidator)
-from PySide.QtCore import Qt, QAbstractTableModel, QModelIndex
+from qtpy.QtGui import QDoubleValidator
+from qtpy.QtWidgets import \
+    QItemDelegate, QTableView, QToolBar, QMessageBox, QComboBox, QLineEdit
+from qtpy.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 # Local modules.
 from pyhmsa.gui.util.periodictable import PeriodicTableDialog

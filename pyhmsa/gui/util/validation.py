@@ -5,7 +5,7 @@ Validation utilities.
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QMessageBox
+from qtpy.QtWidgets import QMessageBox
 
 # Local modules.
 

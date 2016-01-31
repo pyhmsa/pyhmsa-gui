@@ -6,9 +6,9 @@ Detector widgets
 from operator import methodcaller
 
 # Third party modules.
-from PySide.QtGui import \
+from qtpy.QtWidgets import \
     QComboBox, QToolBar, QMessageBox, QTableView, QItemDelegate
-from PySide.QtCore import Qt, QAbstractTableModel, QModelIndex
+from qtpy.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 # Local modules.
 from pyhmsa.gui.util.parameter import \

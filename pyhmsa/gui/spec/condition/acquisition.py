@@ -5,7 +5,7 @@ Acquisition conditions widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QComboBox
+from qtpy.QtWidgets import QComboBox
 
 # Local modules.
 from pyhmsa.gui.util.parameter import NumericalAttributeLineEdit

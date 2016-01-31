@@ -5,10 +5,11 @@ Widgets for parameters and attributes
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import \
-    (QWidget, QLineEdit, QRegExpValidator, QValidator, QPushButton,
-     QVBoxLayout, QFormLayout)
-from PySide.QtCore import QRegExp, Signal
+from qtpy.QtGui import \
+    QRegExpValidator, QValidator
+from qtpy.QtWidgets import \
+    QWidget, QLineEdit, QPushButton, QVBoxLayout, QFormLayout
+from qtpy.QtCore import QRegExp, Signal
 
 import six
 
@@ -23,19 +24,26 @@ from pyhmsa.gui.util.human import camelcase_to_words
 
 # Globals and constants variables.
 
-class _AttributeMixin(object):
+class _ParameterAttributeMixin(object):
 
-    def __init__(self, attribute):
+    def __init__(self):
+        self._attribute = None
+
+    def parameterAttribute(self):
+        return self._attribute
+
+    def setParameterAttribute(self, attribute):
         self._attribute = attribute
-
         self.setAccessibleName(attribute.name)
         self.setToolTip(attribute.__doc__.title())
 
-class _AttributeLineEdit(QLineEdit, _AttributeMixin):
+class _ParameterAttributeLineEdit(QLineEdit, _ParameterAttributeMixin):
 
-    def __init__(self, attribute, *args, **kwargs):
-        QLineEdit.__init__(self, *args, **kwargs)
-        _AttributeMixin.__init__(self, attribute)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def setParameterAttribute(self, attribute):
+        _ParameterAttributeMixin.setParameterAttribute(self, attribute)
 
         if attribute.is_required():
             pattern = QRegExp(r"^(?!\s*$).+")
@@ -51,10 +59,14 @@ class _AttributeLineEdit(QLineEdit, _AttributeMixin):
         else:
             self.setStyleSheet("background: pink")
 
-class TextAttributeLineEdit(_AttributeLineEdit):
+class TextAttributeLineEdit(_ParameterAttributeLineEdit):
+
+    def __init__(self, attribute, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
     def text(self):
-        text = _AttributeLineEdit.text(self)
+        text = _ParameterAttributeLineEdit.text(self)
         if len(text.strip()) == 0:
             return None
         return text
@@ -62,9 +74,9 @@ class TextAttributeLineEdit(_AttributeLineEdit):
     def setText(self, text):
         if text is None:
             text = ''
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
-class NumericalAttributeLineEdit(_AttributeLineEdit):
+class NumericalAttributeLineEdit(_ParameterAttributeLineEdit):
 
     class _Validator(QValidator):
 
@@ -76,35 +88,36 @@ class NumericalAttributeLineEdit(_AttributeLineEdit):
             parts = text.split()
             if len(parts) == 0:
                 if self._attribute.is_required():
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             elif len(parts) == 1:
                 try:
                     float(parts[0])
                 except ValueError:
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             elif len(parts) == 2:
                 try:
                     float(parts[0])
                     validate_unit(parts[1])
                 except ValueError:
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             else:
-                return QValidator.Invalid
+                return (QValidator.Invalid, text, pos)
 
         def fixup(self, text):
             return text
 
     def __init__(self, attribute, *args, **kwargs):
-        _AttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self._format = '{0:g}'
 
@@ -144,23 +157,23 @@ class NumericalAttributeLineEdit(_AttributeLineEdit):
     def text(self):
         if not self.hasAcceptableInput():
             raise ValueError('Invalid text')
-        return self._parse(_AttributeLineEdit.text(self))
+        return self._parse(_ParameterAttributeLineEdit.text(self))
 
     def setText(self, value):
         if isinstance(value, six.string_types):
             value = self._parse(value)
 
         if value is None:
-            return _AttributeLineEdit.setText(self, '')
+            return _ParameterAttributeLineEdit.setText(self, '')
 
         text = self._format.format(value)
         unit = getattr(value, 'unit', None)
         if unit is not None:
             text += ' ' + unit
 
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
-class UnitAttributeLineEdit(_AttributeLineEdit):
+class UnitAttributeLineEdit(_ParameterAttributeLineEdit):
 
     class _Validator(QValidator):
 
@@ -172,31 +185,32 @@ class UnitAttributeLineEdit(_AttributeLineEdit):
         def validate(self, text, pos):
             if not text:
                 if self._attribute.is_required():
-                    return QValidator.Intermediate
+                    return (QValidator.Intermediate, text, pos)
                 else:
-                    return QValidator.Acceptable
+                    return (QValidator.Acceptable, text, pos)
 
             try:
                 validate_unit(text)
             except ValueError:
-                return QValidator.Intermediate
+                return (QValidator.Intermediate, text, pos)
 
             if self._valid_units is not None and \
                     text not in self._valid_units:
-                return QValidator.Intermediate
+                return (QValidator.Intermediate, text, pos)
 
-            return QValidator.Acceptable
+            return (QValidator.Acceptable, text, pos)
 
         def fixup(self, text):
             return text
 
     def __init__(self, attribute, valid_units=None, *args, **kwargs):
-        _AttributeLineEdit.__init__(self, attribute, *args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self.setValidator(self._Validator(attribute, valid_units))
 
     def text(self):
-        text = _AttributeLineEdit.text(self)
+        text = _ParameterAttributeLineEdit.text(self)
         if len(text.strip()) == 0:
             return None
         return text
@@ -204,15 +218,15 @@ class UnitAttributeLineEdit(_AttributeLineEdit):
     def setText(self, text):
         if text is None:
             text = ''
-        return _AttributeLineEdit.setText(self, text)
+        return _ParameterAttributeLineEdit.setText(self, text)
 
-class AtomicNumberAttributePushButton(QPushButton, _AttributeMixin):
+class AtomicNumberAttributePushButton(QPushButton, _ParameterAttributeMixin):
 
     selectionChanged = Signal()
 
     def __init__(self, attribute, *args, **kwargs):
-        QPushButton.__init__(self, *args, **kwargs)
-        _AttributeMixin.__init__(self, attribute)
+        super().__init__(*args, **kwargs)
+        self.setParameterAttribute(attribute)
 
         self.setText(str(None))
 
@@ -252,7 +266,7 @@ class ParameterWidget(QWidget):
     edited = Signal()
 
     def __init__(self, clasz, parent=None):
-        QWidget.__init__(self, parent)
+        super().__init__(parent)
         self.setAccessibleName(' '.join(camelcase_to_words(clasz.__name__)))
 
         # Variable
@@ -266,7 +280,7 @@ class ParameterWidget(QWidget):
 
     def _init_ui(self):
         layout = QFormLayout()
-        layout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow) # Fix for Mac OS
+        layout.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow) # Fix for Mac OS
         return layout
 
     def _create_parameter(self):

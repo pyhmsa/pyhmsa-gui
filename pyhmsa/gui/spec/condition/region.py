@@ -5,7 +5,8 @@ Region of interest widget
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import QLineEdit, QIntValidator
+from qtpy.QtGui import QIntValidator
+from qtpy.QtWidgets import QLineEdit
 
 # Local modules.
 from pyhmsa.gui.spec.condition.condition import _ConditionWidget

@@ -1,5 +1,8 @@
 numpy
 pyhmsa
 matplotlib
-pyside
 six
+qtpy
+nose
+coverage
+setuptools

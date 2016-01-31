@@ -5,10 +5,10 @@ Custom widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtCore import QSize, Qt
-from PySide.QtGui import \
-    (QWidget, QPushButton, QVBoxLayout, QSizePolicy, QPainter, QBrush,
-     QColorDialog)
+from qtpy.QtCore import QSize, Qt
+from qtpy.QtGui import QPainter, QBrush
+from qtpy.QtWidgets import \
+    QWidget, QPushButton, QVBoxLayout, QSizePolicy, QColorDialog
 
 # Local modules.
 

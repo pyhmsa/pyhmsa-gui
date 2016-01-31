@@ -3,14 +3,23 @@ Base datum widgets
 """
 
 # Standard library modules.
+import os
 
 # Third party modules.
-from PySide.QtGui import QWidget, QVBoxLayout, QTableView, QHeaderView, QSizePolicy
-from PySide.QtCore import Qt
+import qtpy
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import \
+    QWidget, QVBoxLayout, QTableView, QHeaderView, QSizePolicy
 
-from matplotlib.backends.backend_qt4agg import \
-    (FigureCanvasQTAgg as FigureCanvas,
-     NavigationToolbar2QT as NavigationToolbar)
+import matplotlib
+if os.environ[qtpy.QT_API] in qtpy.PYQT5_API:
+    matplotlib.use('qt5agg')
+    import matplotlib.backends.backend_qt5agg as mbackend #@UnusedImport
+else:
+    matplotlib.use('qt4agg')
+    import matplotlib.backends.backend_qt4agg as mbackend #@Reimport
+FigureCanvas = mbackend.FigureCanvasQTAgg
+NavigationToolbar = mbackend.NavigationToolbar2QT
 
 # Local modules.
 
@@ -63,7 +72,13 @@ class _DatumTableWidget(_DatumWidget):
     def _init_ui(self):
         # Widgets
         self._table = QTableView()
-        self._table.horizontalHeader().setResizeMode(QHeaderView.Stretch)
+
+        header = self._table.horizontalHeader()
+        mode = QHeaderView.Stretch
+        if os.environ[qtpy.QT_API] in qtpy.PYQT5_API:
+            header.setSectionResizeMode(mode)
+        else:
+            header.setResizeMode(mode)
 
         # Layouts
         layout = _DatumWidget._init_ui(self)

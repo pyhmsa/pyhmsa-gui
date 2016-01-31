@@ -5,9 +5,9 @@ Image raster widgets
 # Standard library modules.
 
 # Third party modules.
-from PySide.QtGui import \
+from qtpy.QtWidgets import \
     QSlider, QFormLayout, QHBoxLayout, QRadioButton, QSplitter, QSizePolicy
-from PySide.QtCore import Qt, QAbstractTableModel, Signal
+from qtpy.QtCore import Qt, QAbstractTableModel, Signal
 
 import matplotlib
 from matplotlib.figure import Figure
@@ -95,8 +95,8 @@ class ImageRaster2DGraphWidget(_DatumFigureWidget):
 
     def _create_toolbar(self, canvas):
         self._toolbar = _ImageRaster2DNavigationToolbarQT(canvas, self.parent())
-        self._toolbar.colorbar_changed.connect(self._on_colorbar_changed)
-        self._toolbar.scalebar_changed.connect(self._on_scalebar_changed)
+#        self._toolbar.colorbar_changed.connect(self._on_colorbar_changed)
+#        self._toolbar.scalebar_changed.connect(self._on_scalebar_changed)
         return self._toolbar
 
     def _create_figure(self):
@@ -213,11 +213,11 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
         self._rdb_single = QRadioButton("Single")
         self._rdb_range = QRadioButton("Range")
 
-        self._sld_start = QSlider(Qt.Orientation.Horizontal)
+        self._sld_start = QSlider(Qt.Horizontal)
         self._sld_start.setTickPosition(QSlider.TicksBelow)
         self._sld_start.setEnabled(False)
 
-        self._sld_end = QSlider(Qt.Orientation.Horizontal)
+        self._sld_end = QSlider(Qt.Horizontal)
         self._sld_end.setTickPosition(QSlider.TicksBelow)
         self._sld_end.setEnabled(False)
 
@@ -235,7 +235,7 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
         layout.addLayout(sublayout)
 
         sublayout = QFormLayout()
-        sublayout.setFieldGrowthPolicy(QFormLayout.FieldGrowthPolicy.ExpandingFieldsGrow) # Fix for Mac OS
+        sublayout.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow) # Fix for Mac OS
         sublayout.addRow('Channels (Start)', self._sld_start)
         sublayout.addRow('Channels (End)', self._sld_end)
         layout.addLayout(sublayout)
@@ -346,8 +346,9 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
         _DatumWidget.setDatum(self, datum)
         self._datum = datum
 
-        self._sld_start.setMaximum(datum.channels - 1)
-        self._sld_end.setMaximum(datum.channels - 1)
+        maximum = datum.channels - 1 if datum is not None else 0
+        self._sld_start.setMaximum(maximum)
+        self._sld_end.setMaximum(maximum)
 
         self._update_data()
 
