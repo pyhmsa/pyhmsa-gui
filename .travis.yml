@@ -16,13 +16,13 @@ cache:
 matrix:
   include:
     - python: "3.5"
-      env: QT_API=pyqt5 BUILD=conda
+      env: QT_API=pyqt5 BUILD=conda DEPLOY=yes
       os: linux
     - python: "3.5"
-      env: QT_API=pyqt4 BUILD=conda
+      env: QT_API=pyqt4 BUILD=conda DEPLOY=no
       os: linux
     - python: "3.4"
-      env: QT_API=pyside BUILD=pip
+      env: QT_API=pyside BUILD=pip DEPLOY=no
       os: linux
 
 before_install:
@@ -88,7 +88,7 @@ deploy:
     on:
       tags: true
       repo: pyhmsa/pyhmsa-gui
-      all_branches: true
+      condition: "$DEPLOY = yes"
   - provider: packagecloud
     repository: hmsa
     username: ppinard
@@ -100,4 +100,4 @@ deploy:
     on:
       tags: true
       repo: pyhmsa/pyhmsa-gui
-      all_branches: true
+      condition: "$DEPLOY = yes"
