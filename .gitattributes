@@ -1,1 +1,2 @@
 pyhmsa/gui/_version.py export-subst
+pyhmsa_gui/_version.py export-subst

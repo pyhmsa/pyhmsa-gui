@@ -101,7 +101,7 @@ setup(name='pyHMSA-gui',
         ],
 
       packages=find_packages(),
-      package_data={'pyhmsa.gui.util': ['icons/*.rcc']},
+      package_data={'pyhmsa_gui.util': ['icons/*.rcc']},
 
       setup_requires=['nose', 'coverage'],
       install_requires=['pyHMSA', 'qtpy', 'matplotlib', 'numpy', 'six', 'setuptools'],
@@ -111,59 +111,59 @@ setup(name='pyHMSA-gui',
       zip_safe=True,
 
       entry_points=\
-        {'pyhmsa.gui.spec.condition.calibration':
-            ['CalibrationConstant = pyhmsa.gui.spec.condition.calibration:CalibrationConstantWidget',
-             'CalibrationLinear = pyhmsa.gui.spec.condition.calibration:CalibrationLinearWidget',
-             'CalibrationPolynomial = pyhmsa.gui.spec.condition.calibration:CalibrationPolynomialWidget',
-             'CalibrationExplicit = pyhmsa.gui.spec.condition.calibration:CalibrationExplicitWidget'],
-         'pyhmsa.gui.spec.condition':
-            ['AcquisitionPoint = pyhmsa.gui.spec.condition.acquisition:AcquisitionPointWidget',
-             'AcquisitionMultipoint = pyhmsa.gui.spec.condition.acquisition:AcquisitionMultipointWidget',
-             'AcquisitionRasterLinescan = pyhmsa.gui.spec.condition.acquisition:AcquisitionRasterLinescanWidget',
-             'AcquisitionRasterXY = pyhmsa.gui.spec.condition.acquisition:AcquisitionRasterXYWidget',
-             'AcquisitionRasterXYZ = pyhmsa.gui.spec.condition.acquisition:AcquisitionRasterXYZWidget',
+        {'pyhmsa_gui.spec.condition.calibration':
+            ['CalibrationConstant = pyhmsa_gui.spec.condition.calibration:CalibrationConstantWidget',
+             'CalibrationLinear = pyhmsa_gui.spec.condition.calibration:CalibrationLinearWidget',
+             'CalibrationPolynomial = pyhmsa_gui.spec.condition.calibration:CalibrationPolynomialWidget',
+             'CalibrationExplicit = pyhmsa_gui.spec.condition.calibration:CalibrationExplicitWidget'],
+         'pyhmsa_gui.spec.condition':
+            ['AcquisitionPoint = pyhmsa_gui.spec.condition.acquisition:AcquisitionPointWidget',
+             'AcquisitionMultipoint = pyhmsa_gui.spec.condition.acquisition:AcquisitionMultipointWidget',
+             'AcquisitionRasterLinescan = pyhmsa_gui.spec.condition.acquisition:AcquisitionRasterLinescanWidget',
+             'AcquisitionRasterXY = pyhmsa_gui.spec.condition.acquisition:AcquisitionRasterXYWidget',
+             'AcquisitionRasterXYZ = pyhmsa_gui.spec.condition.acquisition:AcquisitionRasterXYZWidget',
 
-             'DetectorCamera = pyhmsa.gui.spec.condition.detector:DetectorCameraWidget',
-             'DetectorSpectrometer = pyhmsa.gui.spec.condition.detector:DetectorSpectrometerWidget',
-             'DetectorSpectrometerCL = pyhmsa.gui.spec.condition.detector:DetectorSpectrometerCLWidget',
-             'DetectorSpectrometerWDS = pyhmsa.gui.spec.condition.detector:DetectorSpectrometerWDSWidget',
-             'DetectorSpectrometerXEDS = pyhmsa.gui.spec.condition.detector:DetectorSpectrometerXEDSWidget',
+             'DetectorCamera = pyhmsa_gui.spec.condition.detector:DetectorCameraWidget',
+             'DetectorSpectrometer = pyhmsa_gui.spec.condition.detector:DetectorSpectrometerWidget',
+             'DetectorSpectrometerCL = pyhmsa_gui.spec.condition.detector:DetectorSpectrometerCLWidget',
+             'DetectorSpectrometerWDS = pyhmsa_gui.spec.condition.detector:DetectorSpectrometerWDSWidget',
+             'DetectorSpectrometerXEDS = pyhmsa_gui.spec.condition.detector:DetectorSpectrometerXEDSWidget',
 
-             'ElementalID = pyhmsa.gui.spec.condition.elementalid:ElementalIDWidget',
-             'ElementalIDXray = pyhmsa.gui.spec.condition.elementalid:ElementalIDXrayWidget',
+             'ElementalID = pyhmsa_gui.spec.condition.elementalid:ElementalIDWidget',
+             'ElementalIDXray = pyhmsa_gui.spec.condition.elementalid:ElementalIDXrayWidget',
 
-             'Instrument = pyhmsa.gui.spec.condition.instrument:InstrumentWidget',
+             'Instrument = pyhmsa_gui.spec.condition.instrument:InstrumentWidget',
 
-             'ProbeEM = pyhmsa.gui.spec.condition.probe:ProbeEMWidget',
-             'ProbeTEM = pyhmsa.gui.spec.condition.probe:ProbeTEMWidget',
+             'ProbeEM = pyhmsa_gui.spec.condition.probe:ProbeEMWidget',
+             'ProbeTEM = pyhmsa_gui.spec.condition.probe:ProbeTEMWidget',
 
-             'RegionOfInterest = pyhmsa.gui.spec.condition.region:RegionOfInterestWidget',
+             'RegionOfInterest = pyhmsa_gui.spec.condition.region:RegionOfInterestWidget',
 
-             'SpecimenPosition = pyhmsa.gui.spec.condition.specimenposition:SpecimenPositionWidget',
+             'SpecimenPosition = pyhmsa_gui.spec.condition.specimenposition:SpecimenPositionWidget',
 
-             'CompositionElemental = pyhmsa.gui.spec.condition.composition:CompositionElementalWidget',
+             'CompositionElemental = pyhmsa_gui.spec.condition.composition:CompositionElementalWidget',
 
-             'Specimen = pyhmsa.gui.spec.condition.specimen:SpecimenWidget',
-    #            'SpecimenMultilayer = pyhmsa.gui.spec.condition.specimen:SpecimenMultilayerWidget'
+             'Specimen = pyhmsa_gui.spec.condition.specimen:SpecimenWidget',
+    #            'SpecimenMultilayer = pyhmsa_gui.spec.condition.specimen:SpecimenMultilayerWidget'
             ],
-         'pyhmsa.gui.spec.datum':
-            ['Analysis0D.Table = pyhmsa.gui.spec.datum.analysis:Analysis0DTableWidget',
-             'Analysis1D.Table = pyhmsa.gui.spec.datum.analysis:Analysis1DTableWidget',
-             'Analysis1D.Graph = pyhmsa.gui.spec.datum.analysis:Analysis1DGraphWidget',
-             'Analysis2D.Table = pyhmsa.gui.spec.datum.analysis:Analysis2DTableWidget',
-             'Analysis2D.Graph = pyhmsa.gui.spec.datum.analysis:Analysis2DGraphWidget',
+         'pyhmsa_gui.spec.datum':
+            ['Analysis0D.Table = pyhmsa_gui.spec.datum.analysis:Analysis0DTableWidget',
+             'Analysis1D.Table = pyhmsa_gui.spec.datum.analysis:Analysis1DTableWidget',
+             'Analysis1D.Graph = pyhmsa_gui.spec.datum.analysis:Analysis1DGraphWidget',
+             'Analysis2D.Table = pyhmsa_gui.spec.datum.analysis:Analysis2DTableWidget',
+             'Analysis2D.Graph = pyhmsa_gui.spec.datum.analysis:Analysis2DGraphWidget',
 
-             'AnalysisList0D.Table = pyhmsa.gui.spec.datum.analysislist:AnalysisList0DTableWidget',
-             'AnalysisList0D.Graph = pyhmsa.gui.spec.datum.analysislist:AnalysisList0DGraphWidget',
-             'AnalysisList1D.Table = pyhmsa.gui.spec.datum.analysislist:AnalysisList1DTableWidget',
-             'AnalysisList1D.Graph = pyhmsa.gui.spec.datum.analysislist:AnalysisList1DGraphWidget',
-             'AnalysisList2D.Table = pyhmsa.gui.spec.datum.analysislist:AnalysisList2DTableWidget',
-             'AnalysisList2D.Graph = pyhmsa.gui.spec.datum.analysislist:AnalysisList2DGraphWidget',
+             'AnalysisList0D.Table = pyhmsa_gui.spec.datum.analysislist:AnalysisList0DTableWidget',
+             'AnalysisList0D.Graph = pyhmsa_gui.spec.datum.analysislist:AnalysisList0DGraphWidget',
+             'AnalysisList1D.Table = pyhmsa_gui.spec.datum.analysislist:AnalysisList1DTableWidget',
+             'AnalysisList1D.Graph = pyhmsa_gui.spec.datum.analysislist:AnalysisList1DGraphWidget',
+             'AnalysisList2D.Table = pyhmsa_gui.spec.datum.analysislist:AnalysisList2DTableWidget',
+             'AnalysisList2D.Graph = pyhmsa_gui.spec.datum.analysislist:AnalysisList2DGraphWidget',
 
-             'ImageRaster2D.Table = pyhmsa.gui.spec.datum.imageraster:ImageRaster2DTableWidget',
-             'ImageRaster2D.Graph = pyhmsa.gui.spec.datum.imageraster:ImageRaster2DGraphWidget',
-             'ImageRaster2DSpectral.Table = pyhmsa.gui.spec.datum.imageraster:ImageRaster2DSpectralTableWidget',
-             'ImageRaster2DSpectral.Graph = pyhmsa.gui.spec.datum.imageraster:ImageRaster2DSpectralGraphWidget',
+             'ImageRaster2D.Table = pyhmsa_gui.spec.datum.imageraster:ImageRaster2DTableWidget',
+             'ImageRaster2D.Graph = pyhmsa_gui.spec.datum.imageraster:ImageRaster2DGraphWidget',
+             'ImageRaster2DSpectral.Table = pyhmsa_gui.spec.datum.imageraster:ImageRaster2DSpectralTableWidget',
+             'ImageRaster2DSpectral.Graph = pyhmsa_gui.spec.datum.imageraster:ImageRaster2DSpectralGraphWidget',
              ],
          },
 
