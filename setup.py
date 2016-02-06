@@ -103,7 +103,7 @@ setup(name='pyHMSA-gui',
       packages=find_packages(),
       package_data={'pyhmsa_gui.util': ['icons/*.rcc']},
 
-      setup_requires=['nose', 'coverage'],
+      tests_require=['nose', 'coverage'],
       install_requires=['pyHMSA', 'qtpy', 'matplotlib', 'numpy', 'six', 'setuptools'],
 
       test_suite='nose.collector',
