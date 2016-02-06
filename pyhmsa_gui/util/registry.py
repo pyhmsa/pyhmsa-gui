@@ -50,4 +50,4 @@ def iter_exporters(name=None, *args, **kwargs):
         yield name, clasz(*args, **kwargs)
 
 def iter_preferences_widget_classes(name=None):
-    return iter_entry_points('pyhmsa.viewer.preferences', name)
+    return iter_entry_points('pyhmsa_viewer.preferences', name)
