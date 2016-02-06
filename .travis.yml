@@ -52,16 +52,14 @@ install:
   elif [[ "$BUILD" == "pip" && "$QT_API" == "pyside" ]]; then
     export REQUIREMENTS=$REQUIREMENTS" pyside";
   fi
+- echo $REQUIREMENTS;
 
 - if [[ "$BUILD" == "conda" ]]; then
     export REQUIREMENTS=`echo $REQUIREMENTS | sed 's/pyhmsa//g' | sed 's/qtpy//g'`;
-    echo $REQUIREMENTS;
     conda install $REQUIREMENTS;
-    pip install qtpy pyhmsa;
+    pip install qtpy pyhmsa codecov;
   elif [[ "$BUILD" == "pip" ]]; then
-    pip install --cache-dir $HOME/.pip-cache --upgrade pip codecov;
-    echo $REQUIREMENTS;
-    pip install --cache-dir $HOME/.pip-cache --upgrade $REQUIREMENTS;
+    pip install --cache-dir $HOME/.pip-cache --upgrade pip codecov $REQUIREMENTS;
   fi
   
 - python setup.py develop
