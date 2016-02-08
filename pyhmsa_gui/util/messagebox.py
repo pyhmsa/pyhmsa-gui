@@ -47,7 +47,7 @@ def exceptions(parent, exs, buttons=QMessageBox.Ok,
         traceback.print_tb(exc_traceback, file=tb)
         tracebacks.append(tb.getvalue())
 
-    msgbox = QMessageBox(QMessageBox.Icon.Critical, title, message, buttons, parent)
+    msgbox = QMessageBox(QMessageBox.Critical, title, message, buttons, parent)
     msgbox.setDefaultButton(defaultButton)
     msgbox.setDetailedText('\n'.join(tracebacks))
     msgbox.exec_()
