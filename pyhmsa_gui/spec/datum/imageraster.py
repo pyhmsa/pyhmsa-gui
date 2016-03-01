@@ -29,6 +29,7 @@ from pyhmsa.spec.datum.analysis import Analysis1D
 from pyhmsa.spec.datum.imageraster import ImageRaster2D, ImageRaster2DSpectral
 from pyhmsa.spec.condition.acquisition import AcquisitionRasterXY
 from pyhmsa.type.numerical import convert_unit
+from pyhmsa_plot.spec.datum.imageraster import ImageRaster2DPlot
 
 # Globals and constants variables.
 
@@ -90,106 +91,9 @@ class ImageRaster2DTableWidget(_DatumTableWidget):
 class ImageRaster2DGraphWidget(_DatumFigureWidget):
 
     def __init__(self, controller, datum=None, parent=None):
-        _DatumFigureWidget.__init__(self, ImageRaster2D, controller,
+        plot = ImageRaster2DPlot()
+        _DatumFigureWidget.__init__(self, plot, ImageRaster2D, controller,
                                     datum, parent)
-
-    def _create_toolbar(self, canvas):
-        self._toolbar = _ImageRaster2DNavigationToolbarQT(canvas, self.parent())
-#        self._toolbar.colorbar_changed.connect(self._on_colorbar_changed)
-#        self._toolbar.scalebar_changed.connect(self._on_scalebar_changed)
-        return self._toolbar
-
-    def _create_figure(self):
-        fig = Figure((5.0, 4.0), dpi=100)
-        self._ax = None
-        self._artist = None
-        return fig
-
-    def _create_colorbar(self, fig):
-        settings = self.controller.settings
-
-        colorbar = fig.colorbar(self._artist, ax=self._ax, shrink=0.8)
-        colorbar.ax.set_visible(settings.valueBool('colorbar/visible', True))
-
-        self._toolbar.set_colorbar(colorbar)
-
-        return colorbar
-
-    def _create_scalebar(self, datum):
-        acqs = datum.conditions.findvalues(AcquisitionRasterXY)
-        if not acqs:
-            return None
-        acq = next(iter(acqs))
-        dx_m = convert_unit('m', acq.step_size_x)
-
-        settings = self.controller.settings
-        visible = settings.valueBool('scalebar/visible', True)
-        length_fraction = float(settings.value('scalebar/lengthFraction', 0.2))
-        height_fraction = float(settings.value('scalebar/heightFraction', 0.01))
-        location = int(settings.value('scalebar/location', 3))
-        color = settings.valueColor('scalebar/color', 'w')
-        box_color = settings.valueColor('scalebar/boxColor', 'k')
-        box_alpha = float(settings.value('scalebar/boxAlpha', 0.5))
-        label_top = settings.valueBool('scalebar/labelTop', False)
-
-        scalebar = ScaleBar(dx_m,
-                            length_fraction=length_fraction,
-                            height_fraction=height_fraction,
-                            location=location,
-                            color=color,
-                            box_color=box_color,
-                            box_alpha=box_alpha,
-                            label_top=label_top)
-        scalebar.set_visible(visible)
-
-        self._toolbar.set_scalebar(scalebar)
-
-        return scalebar
-
-    def _draw_figure(self, fig, datum):
-        if datum is None:
-            self._ax = None
-            self._artist = None
-            return
-
-        if self._artist is None: # First draw
-            self._ax = fig.add_subplot("111")
-            fig.subplots_adjust(0.0, 0.0, 1.0, 1.0)
-
-            self._ax.xaxis.set_visible(False)
-            self._ax.yaxis.set_visible(False)
-
-            settings = self.controller.settings
-            cmap = settings.value('colorbar/colormap', 'jet') or 'jet'
-            self._artist = modest_imshow(self._ax, datum.T, cmap=cmap)
-
-            scalebar = self._create_scalebar(datum)
-            if scalebar is not None:
-                self._ax.add_artist(scalebar)
-
-            self._create_colorbar(fig)
-
-        else:
-            self._artist.set_data(datum.T)
-            self._artist.autoscale()
-
-    def _on_colorbar_changed(self, visible, colormap):
-        settings = self.controller.settings
-        settings.setValue('colorbar/visible', visible)
-        settings.setValue('colorbar/colormap', colormap)
-
-    def _on_scalebar_changed(self, visible, location,
-                             length_fraction, height_fraction,
-                             label_top, color, box_color, box_alpha):
-        settings = self.controller.settings
-        settings.setValue('scalebar/visible', visible)
-        settings.setValue('scalebar/location', location)
-        settings.setValue('scalebar/lengthFraction', length_fraction)
-        settings.setValue('scalebar/heightFraction', height_fraction)
-        settings.setValueColor('scalebar/color', color)
-        settings.setValueColor('scalebar/boxColor', box_color)
-        settings.setValue('scalebar/boxAlpha', box_alpha)
-        settings.setValue('scalebar/labelTop', label_top)
 
 class _ImageRaster2DSpectralWidget(_DatumWidget):
 

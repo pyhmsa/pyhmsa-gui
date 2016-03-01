@@ -100,12 +100,15 @@ class _DatumTableWidget(_DatumWidget):
 
 class _DatumFigureWidget(_DatumWidget):
 
-    def __init__(self, clasz, controller, datum=None, parent=None):
+    def __init__(self, plot, clasz, controller, datum=None, parent=None):
+        self._plot = plot
         _DatumWidget.__init__(self, clasz, controller, datum, parent)
 
     def _init_ui(self):
+        # Figure
+        figure = self._plot.figure
+
         # Widgets
-        figure = self._create_figure()
         self._canvas = FigureCanvas(figure)
         self._canvas.setFocusPolicy(Qt.StrongFocus)
         self._canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -120,19 +123,10 @@ class _DatumFigureWidget(_DatumWidget):
 
         return layout
 
-    def _create_figure(self):
-        raise NotImplementedError
-
     def _create_toolbar(self, canvas):
         return NavigationToolbar(canvas, self.parent())
 
-    def _draw_figure(self, fig, datum):
-        raise NotImplementedError
-
     def setDatum(self, datum):
         _DatumWidget.setDatum(self, datum)
-        if datum is None:
-            self._canvas.figure.clear()
-        else:
-            self._draw_figure(self._canvas.figure, datum)
+        self._plot.datum = datum
         self._canvas.draw()
