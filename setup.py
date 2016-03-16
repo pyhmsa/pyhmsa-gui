@@ -123,6 +123,11 @@ setup(name='pyHMSA-gui',
              'AcquisitionRasterXY = pyhmsa_gui.spec.condition.acquisition:AcquisitionRasterXYWidget',
              'AcquisitionRasterXYZ = pyhmsa_gui.spec.condition.acquisition:AcquisitionRasterXYZWidget',
 
+             'CalibrationConstant = pyhmsa_gui.spec.condition.calibration:CalibrationConstantWidget',
+             'CalibrationLinear = pyhmsa_gui.spec.condition.calibration:CalibrationLinearWidget',
+             'CalibrationPolynomial = pyhmsa_gui.spec.condition.calibration:CalibrationPolynomialWidget',
+             'CalibrationExplicit = pyhmsa_gui.spec.condition.calibration:CalibrationExplicitWidget',
+
              'DetectorCamera = pyhmsa_gui.spec.condition.detector:DetectorCameraWidget',
              'DetectorSpectrometer = pyhmsa_gui.spec.condition.detector:DetectorSpectrometerWidget',
              'DetectorSpectrometerCL = pyhmsa_gui.spec.condition.detector:DetectorSpectrometerCLWidget',

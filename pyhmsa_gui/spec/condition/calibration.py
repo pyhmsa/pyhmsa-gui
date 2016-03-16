@@ -12,6 +12,7 @@ from qtpy.QtWidgets import QComboBox, QStackedWidget
 from pkg_resources import iter_entry_points #@UnresolvedImport
 
 # Local modules.
+from pyhmsa_gui.spec.condition.condition import _ConditionWidget
 from pyhmsa_gui.util.parameter import \
     (ParameterWidget, _ParameterAttributeLineEdit, TextAttributeLineEdit,
      UnitAttributeLineEdit, NumericalAttributeLineEdit)
@@ -22,7 +23,7 @@ from pyhmsa.spec.condition.calibration import \
 
 # Globals and constants variables.
 
-class _CalibrationWidget(ParameterWidget):
+class _CalibrationWidget(_ConditionWidget):
 
     def _init_ui(self):
         # Widgets
@@ -30,7 +31,7 @@ class _CalibrationWidget(ParameterWidget):
         self._txt_unit = UnitAttributeLineEdit(self.CLASS.unit)
 
         # Layouts
-        layout = ParameterWidget._init_ui(self)
+        layout = _ConditionWidget._init_ui(self)
         layout.addRow('<i>Quantity</i>', self._txt_quantity)
         layout.addRow('<i>Unit</i>', self._txt_unit)
 
@@ -41,7 +42,7 @@ class _CalibrationWidget(ParameterWidget):
         return layout
 
     def parameter(self, parameter=None):
-        parameter = ParameterWidget.parameter(self, parameter)
+        parameter = _ConditionWidget.parameter(self, parameter)
         parameter.quantity = self._txt_quantity.text()
         parameter.unit = self._txt_unit.text()
         return parameter
@@ -51,17 +52,17 @@ class _CalibrationWidget(ParameterWidget):
         self._txt_unit.setText(calibration.unit)
 
     def setReadOnly(self, state):
-        ParameterWidget.setReadOnly(self, state)
+        _ConditionWidget.setReadOnly(self, state)
         self._txt_quantity.setReadOnly(state)
         self._txt_unit.setReadOnly(state)
 
     def isReadOnly(self):
-        return ParameterWidget.isReadOnly(self) and \
+        return _ConditionWidget.isReadOnly(self) and \
             self._txt_quantity.isReadOnly() and \
             self._txt_unit.isReadOnly()
 
     def hasAcceptableInput(self):
-        return ParameterWidget.hasAcceptableInput(self) and \
+        return _ConditionWidget.hasAcceptableInput(self) and \
             self._txt_quantity.hasAcceptableInput() and \
             self._txt_unit.hasAcceptableInput()
 
@@ -75,7 +76,7 @@ class CalibrationConstantWidget(_CalibrationWidget):
 
     def __init__(self, parent=None):
         _CalibrationWidget.__init__(self, CalibrationConstant, parent)
-        self.setAccessibleName('constant')
+#        self.setAccessibleName('constant')
 
     def _init_ui(self):
         # Widgets
@@ -118,7 +119,7 @@ class CalibrationLinearWidget(_CalibrationWidget):
 
     def __init__(self, parent=None):
         _CalibrationWidget.__init__(self, CalibrationLinear, parent)
-        self.setAccessibleName('linear')
+#        self.setAccessibleName('linear')
 
     def _init_ui(self):
         # Widgets
@@ -260,7 +261,7 @@ class CalibrationPolynomialWidget(_CalibrationWidget):
 
     def __init__(self, parent=None):
         _CalibrationWidget.__init__(self, CalibrationPolynomial, parent)
-        self.setAccessibleName('polynomial')
+#        self.setAccessibleName('polynomial')
 
     def _init_ui(self):
         # Widgets
@@ -358,7 +359,7 @@ class CalibrationExplicitWidget(_CalibrationWidget):
 
     def __init__(self, parent=None):
         _CalibrationWidget.__init__(self, CalibrationExplicit, parent=parent)
-        self.setAccessibleName('explicit')
+#        self.setAccessibleName('explicit')
 
     def _init_ui(self):
         # Widgets
