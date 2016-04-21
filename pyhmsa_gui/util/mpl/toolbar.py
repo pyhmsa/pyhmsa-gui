@@ -15,7 +15,7 @@ from qtpy.QtCore import Qt, Signal
 from qtpy.QtWidgets import \
     (QAction, QDialog, QComboBox, QVBoxLayout, QDialogButtonBox, QCheckBox,
      QFormLayout, QSlider, QLabel, QFileDialog, QSpinBox, QHBoxLayout,
-     QMessageBox, QWidget, QButtonGroup, QRadioButton)
+     QMessageBox, QWidget)
 
 import matplotlib
 import matplotlib.cm as cm
@@ -275,10 +275,6 @@ class ColorbarWidget(QWidget):
 
         self._chk_reverse = QCheckBox('Reverse')
 
-        self._rb_position = QButtonGroup()
-        self._rb_position.addButton(QRadioButton('inside'), 0)
-        self._rb_position.addButton(QRadioButton('outside'), 1)
-
         # Layouts
         layout = QFormLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -286,15 +282,7 @@ class ColorbarWidget(QWidget):
         layout.addRow(self._chk_visible)
         layout.addRow('Color map', horizontal(self._cb_colormap, self._chk_reverse))
 
-        sublayout = QVBoxLayout()
-        for button in self._rb_position.buttons():
-            sublayout.addWidget(button)
-        layout.addRow('Position', sublayout)
-
         self.setLayout(layout)
-
-        # Defaults
-        self._rb_position.button(0).setChecked(True)
 
     def colormap(self):
         colormap = self._cb_colormap.currentText()
@@ -323,20 +311,6 @@ class ColorbarWidget(QWidget):
     def setColorbarVisible(self, visible):
         self._chk_visible.setChecked(visible)
 
-    def position(self):
-        if self._rb_position.button(0).isChecked():
-            return self.POSITION_INSIDE
-        else:
-            return self.POSITION_OUTSIDE
-
-    def setPosition(self, position):
-        if position == self.POSITION_INSIDE:
-            self._rb_position.button(0).setChecked(True)
-        elif position == self.POSITION_OUTSIDE:
-            self._rb_position.button(1).setChecked(True)
-        else:
-            raise ValueError('Unknown position: %s' % position)
-
 class _ColorbarDialog(QDialog):
 
     def __init__(self, parent=None):
@@ -345,10 +319,6 @@ class _ColorbarDialog(QDialog):
 
         # Widgets
         self._wdg_colorbar = ColorbarWidget()
-
-        # FIXME: Implement colorbar position
-        for button in self._wdg_colorbar._rb_position.buttons():
-            button.setEnabled(False)
 
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
 
@@ -443,12 +413,12 @@ class ScalebarWidget(QWidget):
         for text, index in sorted(ScaleBar._LOCATIONS.items(), key=itemgetter(1)):
             self._cb_location.addItem(text, index)
 
-        self._sld_length_fraction = QSlider(Qt.Orientation.Horizontal)
+        self._sld_length_fraction = QSlider(Qt.Horizontal)
         self._sld_length_fraction.setRange(0, 100)
         self._sld_length_fraction.setSingleStep(1)
         self._txt_length_fraction = QLabel()
 
-        self._sld_height_fraction = QSlider(Qt.Orientation.Horizontal)
+        self._sld_height_fraction = QSlider(Qt.Horizontal)
         self._sld_height_fraction.setRange(0, 100)
         self._sld_height_fraction.setSingleStep(1)
         self._txt_height_fraction = QLabel()
@@ -461,7 +431,7 @@ class ScalebarWidget(QWidget):
 
         self._btn_box_color = ColorDialogButton()
 
-        self._sld_box_alpha = QSlider(Qt.Orientation.Horizontal)
+        self._sld_box_alpha = QSlider(Qt.Horizontal)
         self._sld_box_alpha.setRange(0, 100)
         self._sld_box_alpha.setSingleStep(1)
         self._txt_box_alpha = QLabel()
@@ -688,4 +658,3 @@ class NavigationToolbarScalebarMixinQT(object):
         self.scalebar_changed.emit(visible, location,
                                    length_fraction, height_fraction,
                                    label_top, color, box_color, box_alpha)
-
