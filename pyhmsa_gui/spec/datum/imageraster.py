@@ -10,7 +10,6 @@ from qtpy.QtWidgets import \
 from qtpy.QtCore import Qt, QAbstractTableModel, Signal
 
 import matplotlib
-from matplotlib.figure import Figure
 
 import numpy as np
 
@@ -19,19 +18,21 @@ from pyhmsa_gui.spec.datum.datum import \
     _DatumWidget, _DatumTableWidget, _DatumFigureWidget
 from pyhmsa_gui.spec.datum.analysis import \
     Analysis1DTableWidget, Analysis1DGraphWidget
-from pyhmsa_gui.util.mpl.modest_image import imshow as modest_imshow
+from pyhmsa_gui.util.mpl.modest_image import imshow as _modest_imshow
 from pyhmsa_gui.util.mpl.toolbar import \
     (NavigationToolbarQT, NavigationToolbarColorbarMixinQT,
      NavigationToolbarScalebarMixinQT)
-from pyhmsa_gui.util.mpl.scalebar import ScaleBar
 
 from pyhmsa.spec.datum.analysis import Analysis1D
 from pyhmsa.spec.datum.imageraster import ImageRaster2D, ImageRaster2DSpectral
-from pyhmsa.spec.condition.acquisition import AcquisitionRasterXY
-from pyhmsa.type.numerical import convert_unit
 from pyhmsa_plot.spec.datum.imageraster import ImageRaster2DPlot
 
 # Globals and constants variables.
+
+def modest_imshow(ax):
+    def func(*args, **kwargs):
+        return _modest_imshow(ax, *args, **kwargs)
+    return func
 
 class _ImageRaster2DNavigationToolbarQT(NavigationToolbarColorbarMixinQT,
                                         NavigationToolbarScalebarMixinQT,
@@ -92,8 +93,14 @@ class ImageRaster2DGraphWidget(_DatumFigureWidget):
 
     def __init__(self, controller, datum=None, parent=None):
         plot = ImageRaster2DPlot()
+        plot.add_scalebar()
         _DatumFigureWidget.__init__(self, plot, ImageRaster2D, controller,
                                     datum, parent)
+
+    def _create_axes(self, fig):
+        ax = fig.add_axes([0.0, 0.0, 1.0, 1.0])
+        ax.imshow = modest_imshow(ax)
+        return ax
 
 class _ImageRaster2DSpectralWidget(_DatumWidget):
 

@@ -18,6 +18,7 @@ if os.environ[qtpy.QT_API] in qtpy.PYQT5_API:
 else:
     matplotlib.use('qt4agg')
     import matplotlib.backends.backend_qt4agg as mbackend #@Reimport
+from matplotlib.figure import Figure
 FigureCanvas = mbackend.FigureCanvasQTAgg
 NavigationToolbar = mbackend.NavigationToolbar2QT
 
@@ -106,10 +107,11 @@ class _DatumFigureWidget(_DatumWidget):
 
     def _init_ui(self):
         # Figure
-        figure = self._plot.figure
+        self._fig = self._create_figure()
+        self._ax = self._create_axes(self._fig)
 
         # Widgets
-        self._canvas = FigureCanvas(figure)
+        self._canvas = FigureCanvas(self._fig)
         self._canvas.setFocusPolicy(Qt.StrongFocus)
         self._canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self._canvas.updateGeometry()
@@ -123,10 +125,18 @@ class _DatumFigureWidget(_DatumWidget):
 
         return layout
 
+    def _create_figure(self):
+        return Figure()
+
+    def _create_axes(self, fig):
+        return fig.add_subplot("111")
+
     def _create_toolbar(self, canvas):
         return NavigationToolbar(canvas, self.parent())
 
     def setDatum(self, datum):
         _DatumWidget.setDatum(self, datum)
-        self._plot.datum = datum
+        self._ax.clear()
+        if datum is not None:
+            self._plot.plot(datum, ax=self._ax)
         self._canvas.draw()
