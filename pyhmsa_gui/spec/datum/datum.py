@@ -101,9 +101,12 @@ class _DatumTableWidget(_DatumWidget):
 
 class _DatumFigureWidget(_DatumWidget):
 
-    def __init__(self, plot, clasz, controller, datum=None, parent=None):
-        self._plot = plot
-        _DatumWidget.__init__(self, clasz, controller, datum, parent)
+    def __init__(self, plot_class, datum_class, controller, datum=None, parent=None):
+        # Variable
+        self._plot_class = plot_class
+        self._datum = datum
+
+        _DatumWidget.__init__(self, datum_class, controller, datum, parent)
 
     def _init_ui(self):
         # Figure
@@ -134,9 +137,21 @@ class _DatumFigureWidget(_DatumWidget):
     def _create_toolbar(self, canvas):
         return NavigationToolbar(canvas, self.parent())
 
+    def _create_plot(self):
+        return self._plot_class()
+
+    def _update_plot(self, draw=True):
+        datum = self._datum
+        self._ax.clear()
+
+        if datum is not None:
+            plot = self._create_plot()
+            plot.plot(datum, ax=self._ax)
+
+        if draw:
+            self._canvas.draw()
+
     def setDatum(self, datum):
         _DatumWidget.setDatum(self, datum)
-        self._ax.clear()
-        if datum is not None:
-            self._plot.plot(datum, ax=self._ax)
-        self._canvas.draw()
+        self._datum = datum
+        self._update_plot()

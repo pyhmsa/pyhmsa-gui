@@ -8,26 +8,23 @@ Analysis list widgets
 from qtpy.QtWidgets import QSlider, QFormLayout
 from qtpy.QtCore import Qt
 
-from matplotlib.figure import Figure
-
-import numpy as np
-
 # Local modules.
 from pyhmsa_gui.spec.datum.datum import _DatumWidget, _DatumFigureWidget
 from pyhmsa_gui.spec.datum.analysis import \
     (Analysis0DTableWidget, Analysis1DGraphWidget, Analysis1DTableWidget,
      Analysis2DGraphWidget, Analysis2DTableWidget)
-from pyhmsa_gui.util.mpl.toolbar import NavigationToolbarQT
 
 from pyhmsa.spec.datum.analysislist import \
     AnalysisList0D, AnalysisList1D, AnalysisList2D
+
+from pyhmsa_plot.spec.datum.analysislist import AnalysisList0DPlot
 
 # Globals and constants variables.
 
 class _AnalysisListWidget(_DatumWidget):
 
     def __init__(self, clasz, controller, datum=None, parent=None):
-        self._datum = None
+        self._datum = datum
         _DatumWidget.__init__(self, clasz, controller, datum, parent)
 
     def _init_ui(self):
@@ -47,14 +44,14 @@ class _AnalysisListWidget(_DatumWidget):
         layout.addWidget(self._wdg_analysis)
 
         # Signals
-        self._slider.valueChanged.connect(self._onSlide)
+        self._slider.valueChanged.connect(self._on_slide)
 
         return layout
 
     def _create_analysis_widget(self):
         raise NotImplementedError
 
-    def _onSlide(self, value):
+    def _on_slide(self, value):
         if self._datum is None:
             return
         analysis = self._datum.toanalysis(value)
@@ -67,7 +64,7 @@ class _AnalysisListWidget(_DatumWidget):
         maximum = datum.analysis_count - 1 if datum is not None else 0
         self._slider.setMaximum(maximum)
         self._slider.setValue(0)
-        self._onSlide(0)
+        self._on_slide(0)
 
 class AnalysisList0DTableWidget(_AnalysisListWidget):
 
@@ -81,40 +78,8 @@ class AnalysisList0DTableWidget(_AnalysisListWidget):
 class AnalysisList0DGraphWidget(_DatumFigureWidget):
 
     def __init__(self, controller, datum=None, parent=None):
-        _DatumFigureWidget.__init__(self, AnalysisList0D, controller, datum, parent)
-
-    def _create_figure(self):
-        fig = Figure((5.0, 4.0), dpi=100)
-        self._ax = None
-        self._artist = None
-        return fig
-
-    def _create_toolbar(self, canvas):
-        return NavigationToolbarQT(canvas, self.parent())
-
-    def _draw_figure(self, fig, datum):
-        if datum is None:
-            self._ax = None
-            self._artist = None
-            return
-
-        # Extract data and labels
-        xs = np.arange(len(datum))
-        ys = datum[:, 0]
-        xlabel = 'Analysis'
-        ylabel = datum.get_ylabel()
-
-        # Draw
-        if self._artist is None:
-            self._ax = fig.add_subplot("111")
-            self._artist, = self._ax.plot(xs, ys, zorder=1)
-        else:
-            self._artist.set_data((xs, ys))
-            self._ax.relim()
-            self._ax.autoscale(tight=True)
-
-        self._ax.set_xlabel(xlabel)
-        self._ax.set_ylabel(ylabel)
+        _DatumFigureWidget.__init__(self, AnalysisList0DPlot, AnalysisList0D,
+                                    controller, datum, parent)
 
 class AnalysisList1DTableWidget(_AnalysisListWidget):
 
