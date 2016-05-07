@@ -17,14 +17,12 @@ from pyhmsa.spec.condition.specimenposition import SpecimenPosition
 
 from pyhmsa_plot.spec.datum.imageraster import ImageRaster2DPlot
 
-
-
 # Local modules.
 from pyhmsa_gui.spec.datum.datum import \
     _DatumWidget, _DatumTableWidget, _DatumFigureWidget
 from pyhmsa_gui.spec.datum.analysis import \
     Analysis1DTableWidget, Analysis1DGraphWidget
-from pyhmsa_gui.util.mpl.toolbar import \
+from pyhmsa_gui.util.toolbar import \
     (NavigationToolbarQT, NavigationToolbarColorbarMixinQT,
      NavigationToolbarScalebarMixinQT)
 

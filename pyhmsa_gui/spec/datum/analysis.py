@@ -9,7 +9,7 @@ from qtpy.QtCore import Qt, QAbstractTableModel
 
 # Local modules.
 from pyhmsa_gui.spec.datum.datum import _DatumTableWidget, _DatumFigureWidget
-from pyhmsa_gui.util.mpl.toolbar import NavigationToolbarQT, NavigationToolbarSnapMixinQT
+from pyhmsa_gui.util.toolbar import NavigationToolbarQT, NavigationToolbarSnapMixinQT
 
 from pyhmsa.spec.datum.analysis import Analysis0D, Analysis1D, Analysis2D
 from pyhmsa.spec.condition.detector import DetectorSpectrometer
