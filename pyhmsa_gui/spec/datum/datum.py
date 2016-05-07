@@ -18,6 +18,7 @@ if os.environ[qtpy.QT_API] in qtpy.PYQT5_API:
 else:
     matplotlib.use('qt4agg')
     import matplotlib.backends.backend_qt4agg as mbackend #@Reimport
+from matplotlib.figure import Figure
 FigureCanvas = mbackend.FigureCanvasQTAgg
 NavigationToolbar = mbackend.NavigationToolbar2QT
 
@@ -100,13 +101,20 @@ class _DatumTableWidget(_DatumWidget):
 
 class _DatumFigureWidget(_DatumWidget):
 
-    def __init__(self, clasz, controller, datum=None, parent=None):
-        _DatumWidget.__init__(self, clasz, controller, datum, parent)
+    def __init__(self, plot_class, datum_class, controller, datum=None, parent=None):
+        # Variable
+        self._plot_class = plot_class
+        self._datum = datum
+
+        _DatumWidget.__init__(self, datum_class, controller, datum, parent)
 
     def _init_ui(self):
+        # Figure
+        self._fig = self._create_figure()
+        self._ax = self._create_axes(self._fig)
+
         # Widgets
-        figure = self._create_figure()
-        self._canvas = FigureCanvas(figure)
+        self._canvas = FigureCanvas(self._fig)
         self._canvas.setFocusPolicy(Qt.StrongFocus)
         self._canvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self._canvas.updateGeometry()
@@ -121,18 +129,29 @@ class _DatumFigureWidget(_DatumWidget):
         return layout
 
     def _create_figure(self):
-        raise NotImplementedError
+        return Figure()
+
+    def _create_axes(self, fig):
+        return fig.add_subplot("111")
 
     def _create_toolbar(self, canvas):
         return NavigationToolbar(canvas, self.parent())
 
-    def _draw_figure(self, fig, datum):
-        raise NotImplementedError
+    def _create_plot(self):
+        return self._plot_class()
+
+    def _update_plot(self, draw=True):
+        datum = self._datum
+        self._ax.clear()
+
+        if datum is not None:
+            plot = self._create_plot()
+            plot.plot(datum, ax=self._ax)
+
+        if draw:
+            self._canvas.draw()
 
     def setDatum(self, datum):
         _DatumWidget.setDatum(self, datum)
-        if datum is None:
-            self._canvas.figure.clear()
-        else:
-            self._draw_figure(self._canvas.figure, datum)
-        self._canvas.draw()
+        self._datum = datum
+        self._update_plot()

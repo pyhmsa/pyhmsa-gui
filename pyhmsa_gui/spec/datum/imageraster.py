@@ -9,44 +9,47 @@ from qtpy.QtWidgets import \
     QSlider, QFormLayout, QHBoxLayout, QRadioButton, QSplitter, QSizePolicy
 from qtpy.QtCore import Qt, QAbstractTableModel, Signal
 
-import matplotlib
-from matplotlib.figure import Figure
-
 import numpy as np
+
+from pyhmsa.spec.datum.analysis import Analysis1D
+from pyhmsa.spec.datum.imageraster import ImageRaster2D, ImageRaster2DSpectral
+from pyhmsa.spec.condition.specimenposition import SpecimenPosition
+
+from pyhmsa_plot.spec.datum.imageraster import ImageRaster2DPlot
 
 # Local modules.
 from pyhmsa_gui.spec.datum.datum import \
     _DatumWidget, _DatumTableWidget, _DatumFigureWidget
 from pyhmsa_gui.spec.datum.analysis import \
     Analysis1DTableWidget, Analysis1DGraphWidget
-from pyhmsa_gui.util.mpl.modest_image import imshow as modest_imshow
-from pyhmsa_gui.util.mpl.toolbar import \
+from pyhmsa_gui.util.toolbar import \
     (NavigationToolbarQT, NavigationToolbarColorbarMixinQT,
      NavigationToolbarScalebarMixinQT)
-from pyhmsa_gui.util.mpl.scalebar import ScaleBar
-
-from pyhmsa.spec.datum.analysis import Analysis1D
-from pyhmsa.spec.datum.imageraster import ImageRaster2D, ImageRaster2DSpectral
-from pyhmsa.spec.condition.acquisition import AcquisitionRasterXY
-from pyhmsa.type.numerical import convert_unit
 
 # Globals and constants variables.
 
-class _ImageRaster2DNavigationToolbarQT(NavigationToolbarColorbarMixinQT,
-                                        NavigationToolbarScalebarMixinQT,
-                                        NavigationToolbarQT):
+class _ImageRaster2DNavigationToolbarQT(NavigationToolbarQT,
+                                        NavigationToolbarColorbarMixinQT,
+                                        NavigationToolbarScalebarMixinQT):
+
+    colorbarClicked = Signal(bool)
+    scalebarClicked = Signal(bool)
 
     def __init__(self, canvas, parent, coordinates=True):
-        NavigationToolbarQT.__init__(self, canvas, parent, coordinates)
-        NavigationToolbarColorbarMixinQT.__init__(self)
-        NavigationToolbarScalebarMixinQT.__init__(self)
+        super().__init__(canvas, parent, coordinates)
 
-    def _init_toolbar(self):
-        NavigationToolbarQT._init_toolbar(self)
         NavigationToolbarColorbarMixinQT._init_toolbar(self)
         NavigationToolbarScalebarMixinQT._init_toolbar(self)
 
+    def colorbar(self, *args):
+        self.colorbarClicked.emit(self.isColorbarChecked())
+
+    def scalebar(self):
+        self.scalebarClicked.emit(self.isScalebarChecked())
+
 class ImageRaster2DTableWidget(_DatumTableWidget):
+
+    valueSelected = Signal(int, int)
 
     class _TableModel(QAbstractTableModel):
 
@@ -84,112 +87,62 @@ class ImageRaster2DTableWidget(_DatumTableWidget):
         _DatumTableWidget.__init__(self, ImageRaster2D, controller,
                                    datum, parent)
 
+    def _init_ui(self):
+        layout = _DatumTableWidget._init_ui(self)
+        self._table.clicked.connect(self._on_table_clicked)
+        return layout
+
     def _create_model(self, datum):
         return self._TableModel(datum)
 
+    def _on_table_clicked(self, index):
+        self.valueSelected.emit(index.column(), index.row())
+
 class ImageRaster2DGraphWidget(_DatumFigureWidget):
 
+    valueSelected = Signal(int, int)
+
     def __init__(self, controller, datum=None, parent=None):
-        _DatumFigureWidget.__init__(self, ImageRaster2D, controller,
-                                    datum, parent)
+        _DatumFigureWidget.__init__(self, ImageRaster2DPlot, ImageRaster2D,
+                                    controller, datum, parent)
+
+    def _init_ui(self):
+        layout = _DatumFigureWidget._init_ui(self)
+        self._canvas.mpl_connect("button_release_event", self._on_figure_clicked)
+        return layout
 
     def _create_toolbar(self, canvas):
-        self._toolbar = _ImageRaster2DNavigationToolbarQT(canvas, self.parent())
-#        self._toolbar.colorbar_changed.connect(self._on_colorbar_changed)
-#        self._toolbar.scalebar_changed.connect(self._on_scalebar_changed)
-        return self._toolbar
+        toolbar = _ImageRaster2DNavigationToolbarQT(canvas, self.parent())
+        toolbar.colorbarClicked.connect(self._on_colorbar_clicked)
+        toolbar.scalebarClicked.connect(self._on_scalebar_clicked)
+        return toolbar
 
-    def _create_figure(self):
-        fig = Figure((5.0, 4.0), dpi=100)
-        self._ax = None
-        self._artist = None
-        return fig
-
-    def _create_colorbar(self, fig):
-        settings = self.controller.settings
-
-        colorbar = fig.colorbar(self._artist, ax=self._ax, shrink=0.8)
-        colorbar.ax.set_visible(settings.valueBool('colorbar/visible', True))
-
-        self._toolbar.set_colorbar(colorbar)
-
-        return colorbar
-
-    def _create_scalebar(self, datum):
-        acqs = datum.conditions.findvalues(AcquisitionRasterXY)
-        if not acqs:
-            return None
-        acq = next(iter(acqs))
-        dx_m = convert_unit('m', acq.step_size_x)
-
-        settings = self.controller.settings
-        visible = settings.valueBool('scalebar/visible', True)
-        length_fraction = float(settings.value('scalebar/lengthFraction', 0.2))
-        height_fraction = float(settings.value('scalebar/heightFraction', 0.01))
-        location = int(settings.value('scalebar/location', 3))
-        color = settings.valueColor('scalebar/color', 'w')
-        box_color = settings.valueColor('scalebar/boxColor', 'k')
-        box_alpha = float(settings.value('scalebar/boxAlpha', 0.5))
-        label_top = settings.valueBool('scalebar/labelTop', False)
-
-        scalebar = ScaleBar(dx_m,
-                            length_fraction=length_fraction,
-                            height_fraction=height_fraction,
-                            location=location,
-                            color=color,
-                            box_color=box_color,
-                            box_alpha=box_alpha,
-                            label_top=label_top)
-        scalebar.set_visible(visible)
-
-        self._toolbar.set_scalebar(scalebar)
-
-        return scalebar
-
-    def _draw_figure(self, fig, datum):
-        if datum is None:
-            self._ax = None
-            self._artist = None
+    def _on_figure_clicked(self, event):
+        if not event.inaxes or self._datum is None:
             return
+        x = event.xdata
+        y = event.ydata
+        unit = self._create_plot().unit
+        position = SpecimenPosition(x=(x, unit), y=(y, unit))
+        x, y = self._datum.get_index(position)
+        self.valueSelected.emit(x, y)
 
-        if self._artist is None: # First draw
-            self._ax = fig.add_subplot("111")
-            fig.subplots_adjust(0.0, 0.0, 1.0, 1.0)
+    def _on_colorbar_clicked(self, checked):
+        self._update_plot()
 
-            self._ax.xaxis.set_visible(False)
-            self._ax.yaxis.set_visible(False)
+    def _on_scalebar_clicked(self, checked):
+        self._update_plot()
 
-            settings = self.controller.settings
-            cmap = settings.value('colorbar/colormap', 'jet') or 'jet'
-            self._artist = modest_imshow(self._ax, datum.T, cmap=cmap)
+    def _create_plot(self):
+        plot = _DatumFigureWidget._create_plot(self)
 
-            scalebar = self._create_scalebar(datum)
-            if scalebar is not None:
-                self._ax.add_artist(scalebar)
+        if self.toolbar.isColorbarChecked():
+            plot.add_colorbar()
 
-            self._create_colorbar(fig)
+        if self.toolbar.isScalebarChecked():
+            plot.add_scalebar()
 
-        else:
-            self._artist.set_data(datum.T)
-            self._artist.autoscale()
-
-    def _on_colorbar_changed(self, visible, colormap):
-        settings = self.controller.settings
-        settings.setValue('colorbar/visible', visible)
-        settings.setValue('colorbar/colormap', colormap)
-
-    def _on_scalebar_changed(self, visible, location,
-                             length_fraction, height_fraction,
-                             label_top, color, box_color, box_alpha):
-        settings = self.controller.settings
-        settings.setValue('scalebar/visible', visible)
-        settings.setValue('scalebar/location', location)
-        settings.setValue('scalebar/lengthFraction', length_fraction)
-        settings.setValue('scalebar/heightFraction', height_fraction)
-        settings.setValueColor('scalebar/color', color)
-        settings.setValueColor('scalebar/boxColor', box_color)
-        settings.setValue('scalebar/boxAlpha', box_alpha)
-        settings.setValue('scalebar/labelTop', label_top)
+        return plot
 
 class _ImageRaster2DSpectralWidget(_DatumWidget):
 
@@ -198,10 +151,8 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
     MODE_SINGLE = 'single'
     MODE_RANGE = 'range'
 
-    valueSelected = Signal(int, int)
-
     def __init__(self, controller, datum=None, parent=None):
-        self._datum = None
+        self._datum = datum
         _DatumWidget.__init__(self, ImageRaster2DSpectral, controller,
                               datum, parent)
 
@@ -255,7 +206,7 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
         self._sld_start.valueChanged.connect(self._on_slide_start)
         self._sld_end.valueChanged.connect(self._on_slide_end)
 
-        self.valueSelected.connect(self._on_value_selected)
+        self._wdg_imageraster2d.valueSelected.connect(self._on_value_selected)
 
         # Defaults
         self.setMode(self.MODE_SUM)
@@ -340,7 +291,6 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
             return
         subdatum = self._datum[x, y]
         self._wdg_analysis.setDatum(subdatum.view(Analysis1D))
-        self._update_data()
 
     def setDatum(self, datum):
         _DatumWidget.setDatum(self, datum)
@@ -392,103 +342,68 @@ class _ImageRaster2DSpectralWidget(_DatumWidget):
 class ImageRaster2DSpectralTableWidget(_ImageRaster2DSpectralWidget):
 
     def _create_imageraster2d_widget(self):
-        widget = ImageRaster2DTableWidget(self.controller)
-        widget._table.clicked.connect(self._on_table_clicked)
-        return widget
+        return ImageRaster2DTableWidget(self.controller)
 
     def _create_analysis1d_widget(self):
         return Analysis1DTableWidget(self.controller)
 
-    def _on_table_clicked(self, index):
-        self.valueSelected.emit(index.column(), index.row())
-
 class _Analysis1DGraphWidget2(Analysis1DGraphWidget):
 
-    def _create_figure(self):
-        fig = Analysis1DGraphWidget._create_figure(self)
-        self._ax_single = None
-        self._ax_range = None
-        return fig
+    def __init__(self, controller, datum=None, parent=None):
+        self._draw_position = False
+        self._selected_position = None
+        self._draw_range = False
+        self._selected_range = None
+        Analysis1DGraphWidget.__init__(self, controller, datum, parent)
 
-    def _draw_figure(self, fig, datum):
-        Analysis1DGraphWidget._draw_figure(self, fig, datum)
+    def _create_plot(self):
+        plot = Analysis1DGraphWidget._create_plot(self)
 
-        if datum is None:
-            self._ax_single = None
-            self._ax_range = None
-            return
+        if self._draw_position and self._selected_position is not None:
+            plot.add_selected_x(self._selected_position)
 
-        color = matplotlib.rcParams['axes.color_cycle'][1]
+        if self._draw_range and self._selected_range is not None:
+            plot.add_selected_range(*self._selected_range)
 
-        self._ax_single = self._ax.axvline(0, lw=3, color=color, zorder=3)
-        self._ax_single.set_visible(False)
-
-        self._ax_range = self._ax.axvspan(0, 0, alpha=0.5, facecolor=color, zorder=3)
-        self._ax_range.set_visible(False)
+        return plot
 
     def setMode(self, mode):
-        if self._ax_single is None or self._ax_range is None:
-            return
-
-        vsingle = vrange = False
+        self._draw_range = self._draw_position = False
         if mode == _ImageRaster2DSpectralWidget.MODE_SINGLE:
-            vsingle = True
+            self._draw_position = True
         elif mode == _ImageRaster2DSpectralWidget.MODE_RANGE:
-            vrange = True
+            self._draw_range = True
 
-        self._ax_single.set_visible(vsingle)
-        self._ax_range.set_visible(vrange)
-
-        self._canvas.draw()
+        self._update_plot()
 
     def setSinglePosition(self, channel):
-        if self._artist is None or self._ax_single is None:
+        if self._datum is None:
             return
 
-        self._ax_single.set_visible(True)
+        xs = self._datum.get_xy()[:, 0]
+        self._selected_position = xs[channel]
+        self._draw_position = True
 
-        xs = self._artist.get_xdata()
-        ys = self._artist.get_ydata()
-
-        x = xs[channel]
-        ymin = min(ys); ymax = max(ys)
-        self._ax_single.set_xdata([x, x])
-        self._ax_single.set_ydata([ymin, ymax])
-
-        self._canvas.draw()
+        self._update_plot()
 
     def setRange(self, start, end):
-        if self._artist is None or self._ax_range is None:
+        if self._datum is None:
             return
 
-        self._ax_range.set_visible(True)
-
-        xs = self._artist.get_xdata()
-        ys = self._artist.get_ydata()
-
+        xs = self._datum.get_xy()[:, 0]
         xmin = xs[start]; xmax = xs[end]
-        ymin = min(ys); ymax = max(ys)
-        self._ax_range.set_xy([[xmin, ymin],
-                               [xmin, ymax],
-                               [xmax, ymax],
-                               [xmax, ymin]])
+        self._selected_range = (xmin, xmax)
+        self._draw_range = True
 
-        self._canvas.draw()
+        self._update_plot()
 
 class ImageRaster2DSpectralGraphWidget(_ImageRaster2DSpectralWidget):
 
     def _create_imageraster2d_widget(self):
-        widget = ImageRaster2DGraphWidget(self.controller)
-        widget._canvas.mpl_connect("button_release_event", self._onFigureClicked)
-        return widget
+        return ImageRaster2DGraphWidget(self.controller)
 
     def _create_analysis1d_widget(self):
         return _Analysis1DGraphWidget2(self.controller)
-
-    def _onFigureClicked(self, event):
-        if not event.inaxes:
-            return
-        self.valueSelected.emit(event.xdata, event.ydata)
 
     def _update_mode_single(self):
         _ImageRaster2DSpectralWidget._update_mode_single(self)

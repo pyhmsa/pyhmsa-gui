@@ -7,15 +7,14 @@ Analysis widgets
 # Third party modules.
 from qtpy.QtCore import Qt, QAbstractTableModel
 
-from matplotlib.figure import Figure
-
 # Local modules.
 from pyhmsa_gui.spec.datum.datum import _DatumTableWidget, _DatumFigureWidget
-from pyhmsa_gui.util.mpl.toolbar import NavigationToolbarQT, NavigationToolbarSnapMixinQT
-from pyhmsa_gui.util.mpl.modest_image import imshow as modest_imshow
+from pyhmsa_gui.util.toolbar import NavigationToolbarQT, NavigationToolbarSnapMixinQT
 
 from pyhmsa.spec.datum.analysis import Analysis0D, Analysis1D, Analysis2D
 from pyhmsa.spec.condition.detector import DetectorSpectrometer
+
+from pyhmsa_plot.spec.datum.analysis import Analysis1DPlot, Analysis2DPlot
 
 # Globals and constants variables.
 
@@ -126,39 +125,11 @@ class Analysis1DTableWidget(_DatumTableWidget):
 class Analysis1DGraphWidget(_DatumFigureWidget):
 
     def __init__(self, controller, datum=None, parent=None):
-        _DatumFigureWidget.__init__(self, Analysis1D, controller, datum, parent)
-
-    def _create_figure(self):
-        fig = Figure((5.0, 4.0), dpi=100)
-        self._ax = None
-        self._artist = None
-        return fig
+        _DatumFigureWidget.__init__(self, Analysis1DPlot, Analysis1D,
+                                    controller, datum, parent)
 
     def _create_toolbar(self, canvas):
         return _Analysis1DNagivationToolbarQT(canvas, self.parent())
-
-    def _draw_figure(self, fig, datum):
-        if datum is None:
-            self._ax = None
-            self._artist = None
-            return
-
-        # Extract data and labels
-        xy = datum.get_xy()
-        xlabel = datum.get_xlabel()
-        ylabel = datum.get_ylabel()
-
-        # Draw
-        if self._artist is None:
-            self._ax = fig.add_subplot("111")
-            self._artist, = self._ax.plot(xy[:, 0], xy[:, 1], zorder=1)
-        else:
-            self._artist.set_data((xy[:, 0], xy[:, 1]))
-            self._ax.relim()
-            self._ax.autoscale(tight=True)
-
-        self._ax.set_xlabel(xlabel)
-        self._ax.set_ylabel(ylabel)
 
 class Analysis2DTableWidget(_DatumTableWidget):
 
@@ -203,21 +174,5 @@ class Analysis2DTableWidget(_DatumTableWidget):
 class Analysis2DGraphWidget(_DatumFigureWidget):
 
     def __init__(self, controller, datum=None, parent=None):
-        _DatumFigureWidget.__init__(self, Analysis2D, controller, datum, parent)
-
-    def _create_figure(self):
-        fig = Figure((5.0, 4.0), dpi=100)
-        self._ax = None
-        self._artist = None
-        return fig
-
-    def _draw_figure(self, fig, datum):
-        if self._artist is None: # First draw
-            self._ax = fig.add_axes([0.0, 0.0, 1.0, 1.0])
-            self._ax.xaxis.set_visible(False)
-            self._ax.yaxis.set_visible(False)
-            self._artist = modest_imshow(self._ax, datum.T)
-            fig.colorbar(self._artist, shrink=0.8)
-        else:
-            self._artist.set_data(datum.T)
-            self._artist.autoscale()
+        _DatumFigureWidget.__init__(self, Analysis2DPlot, Analysis2D,
+                                    controller, datum, parent)
