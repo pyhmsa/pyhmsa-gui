@@ -11,33 +11,43 @@ from qtpy.QtCore import Qt, QAbstractTableModel, Signal
 
 import numpy as np
 
-# Local modules.
-from pyhmsa_gui.spec.datum.datum import \
-    _DatumWidget, _DatumTableWidget, _DatumFigureWidget
-from pyhmsa_gui.spec.datum.analysis import \
-    Analysis1DTableWidget, Analysis1DGraphWidget
-
 from pyhmsa.spec.datum.analysis import Analysis1D
 from pyhmsa.spec.datum.imageraster import ImageRaster2D, ImageRaster2DSpectral
 from pyhmsa.spec.condition.specimenposition import SpecimenPosition
 
 from pyhmsa_plot.spec.datum.imageraster import ImageRaster2DPlot
 
+
+
+# Local modules.
+from pyhmsa_gui.spec.datum.datum import \
+    _DatumWidget, _DatumTableWidget, _DatumFigureWidget
+from pyhmsa_gui.spec.datum.analysis import \
+    Analysis1DTableWidget, Analysis1DGraphWidget
+from pyhmsa_gui.util.mpl.toolbar import \
+    (NavigationToolbarQT, NavigationToolbarColorbarMixinQT,
+     NavigationToolbarScalebarMixinQT)
+
 # Globals and constants variables.
 
-#class _ImageRaster2DNavigationToolbarQT(NavigationToolbarColorbarMixinQT,
-#                                        NavigationToolbarScalebarMixinQT,
-#                                        NavigationToolbarQT):
-#
-#    def __init__(self, canvas, parent, coordinates=True):
-#        NavigationToolbarQT.__init__(self, canvas, parent, coordinates)
-#        NavigationToolbarColorbarMixinQT.__init__(self)
-#        NavigationToolbarScalebarMixinQT.__init__(self)
-#
-#    def _init_toolbar(self):
-#        NavigationToolbarQT._init_toolbar(self)
-#        NavigationToolbarColorbarMixinQT._init_toolbar(self)
-#        NavigationToolbarScalebarMixinQT._init_toolbar(self)
+class _ImageRaster2DNavigationToolbarQT(NavigationToolbarQT,
+                                        NavigationToolbarColorbarMixinQT,
+                                        NavigationToolbarScalebarMixinQT):
+
+    colorbarClicked = Signal(bool)
+    scalebarClicked = Signal(bool)
+
+    def __init__(self, canvas, parent, coordinates=True):
+        super().__init__(canvas, parent, coordinates)
+
+        NavigationToolbarColorbarMixinQT._init_toolbar(self)
+        NavigationToolbarScalebarMixinQT._init_toolbar(self)
+
+    def colorbar(self, *args):
+        self.colorbarClicked.emit(self.isColorbarChecked())
+
+    def scalebar(self):
+        self.scalebarClicked.emit(self.isScalebarChecked())
 
 class ImageRaster2DTableWidget(_DatumTableWidget):
 
@@ -103,6 +113,12 @@ class ImageRaster2DGraphWidget(_DatumFigureWidget):
         self._canvas.mpl_connect("button_release_event", self._on_figure_clicked)
         return layout
 
+    def _create_toolbar(self, canvas):
+        toolbar = _ImageRaster2DNavigationToolbarQT(canvas, self.parent())
+        toolbar.colorbarClicked.connect(self._on_colorbar_clicked)
+        toolbar.scalebarClicked.connect(self._on_scalebar_clicked)
+        return toolbar
+
     def _on_figure_clicked(self, event):
         if not event.inaxes or self._datum is None:
             return
@@ -112,6 +128,23 @@ class ImageRaster2DGraphWidget(_DatumFigureWidget):
         position = SpecimenPosition(x=(x, unit), y=(y, unit))
         x, y = self._datum.get_index(position)
         self.valueSelected.emit(x, y)
+
+    def _on_colorbar_clicked(self, checked):
+        self._update_plot()
+
+    def _on_scalebar_clicked(self, checked):
+        self._update_plot()
+
+    def _create_plot(self):
+        plot = _DatumFigureWidget._create_plot(self)
+
+        if self.toolbar.isColorbarChecked():
+            plot.add_colorbar()
+
+        if self.toolbar.isScalebarChecked():
+            plot.add_scalebar()
+
+        return plot
 
 class _ImageRaster2DSpectralWidget(_DatumWidget):
 
