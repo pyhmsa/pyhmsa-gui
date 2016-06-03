@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 # Standard library modules.
+import glob
 import os
 import sys
-import glob
 from distutils.core import Command
 from subprocess import check_call
 
@@ -139,6 +139,9 @@ setup(name='pyHMSA-gui',
 
              'Instrument = pyhmsa_gui.spec.condition.instrument:InstrumentWidget',
 
+             'BackgroundID = pyhmsa_gui.spec.condition.backgroundid:BackgroundIDWidget',
+             'IntensityID = pyhmsa_gui.spec.condition.intensityid:IntensityIDWidget',
+
              'ProbeEM = pyhmsa_gui.spec.condition.probe:ProbeEMWidget',
              'ProbeTEM = pyhmsa_gui.spec.condition.probe:ProbeTEMWidget',
 
@@ -149,8 +152,8 @@ setup(name='pyHMSA-gui',
              'CompositionElemental = pyhmsa_gui.spec.condition.composition:CompositionElementalWidget',
 
              'Specimen = pyhmsa_gui.spec.condition.specimen:SpecimenWidget',
-    #            'SpecimenMultilayer = pyhmsa_gui.spec.condition.specimen:SpecimenMultilayerWidget'
-            ],
+             #            'SpecimenMultilayer = pyhmsa_gui.spec.condition.specimen:SpecimenMultilayerWidget'
+             ],
          'pyhmsa_gui.spec.datum':
             ['Analysis0D.Table = pyhmsa_gui.spec.datum.analysis:Analysis0DTableWidget',
              'Analysis1D.Table = pyhmsa_gui.spec.datum.analysis:Analysis1DTableWidget',
