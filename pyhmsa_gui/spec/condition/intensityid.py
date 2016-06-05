@@ -11,8 +11,8 @@ from qtpy.QtWidgets import QComboBox
 from pyhmsa_gui.spec.condition.condition import _ConditionWidget
 
 from pyhmsa_measurement.spec.condition.intensityid import \
-    IntensityID, _INTENSITY_TYPES, _INTENSITY_MEASURES
-
+    (IntensityID, _INTENSITY_TYPES, _INTENSITY_MEASURES,
+     INTENSITY_TYPE_PEAK, INTENSITY_MEASURE_AREA)
 
 # Globals and constants variables.
 
@@ -21,12 +21,11 @@ class IntensityIDWidget(_ConditionWidget):
         _ConditionWidget.__init__(self, IntensityID, parent)
 
     def _init_ui(self):
-        print("TEST HUHU")
         # Controls
         self._cb_type = QComboBox()
-        self._cb_type.addItems([None] + list(_INTENSITY_TYPES))
+        self._cb_type.addItems(list(_INTENSITY_TYPES))
         self._cb_measure = QComboBox()
-        self._cb_measure.addItems([None] + list(_INTENSITY_MEASURES))
+        self._cb_measure.addItems(list(_INTENSITY_MEASURES))
 
         # Layouts
         layout = _ConditionWidget._init_ui(self)
@@ -40,18 +39,22 @@ class IntensityIDWidget(_ConditionWidget):
         return layout
 
     def _create_parameter(self):
-        return self.CLASS(None, None)
+        return self.CLASS(INTENSITY_TYPE_PEAK, INTENSITY_MEASURE_AREA) # Temporary value
 
     def parameter(self, parameter=None):
         parameter = _ConditionWidget.parameter(self, parameter)
-        parameter.type = self._cb_type
-        parameter.measure = self._cb_measure
+        parameter.type = self._cb_type.currentText()
+        parameter.measure = self._cb_measure.currentText()
         return parameter
 
     def setParameter(self, condition):
         _ConditionWidget.setParameter(self, condition)
-        self._cb_type.setCurrentIndex(self._cb_type.findText(condition.type))
-        self._cb_measure.setCurrentIndex(self._cb_measure.findText(condition.measure))
+
+        index = self._cb_type.findText(condition.type)
+        self._cb_type.setCurrentIndex(index)
+
+        index = self._cb_measure.findText(condition.measure)
+        self._cb_measure.setCurrentIndex(index)
 
     def setReadOnly(self, state):
         _ConditionWidget.setReadOnly(self, state)
@@ -62,6 +65,3 @@ class IntensityIDWidget(_ConditionWidget):
         return _ConditionWidget.isReadOnly(self) and \
                not self._cb_type.isEnabled() and \
                not self._cb_measure.isEnabled()
-
-    def hasAcceptableInput(self):
-        return _ConditionWidget.hasAcceptableInput(self)
