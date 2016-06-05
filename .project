@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>pyhmsa</project>
+		<project>pyhmsa-measurement</project>
 		<project>pyhmsa-plot</project>
 	</projects>
 	<buildSpec>
