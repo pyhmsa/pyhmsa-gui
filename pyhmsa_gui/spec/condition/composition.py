@@ -251,8 +251,11 @@ class CompositionElementalWidget(_CompositionWidget):
 
     def setParameter(self, condition):
         _CompositionWidget.setParameter(self, condition)
-        self._table.model().composition.update(condition)
-        self._table.model().reset()
+
+        model = self._table.model()
+        model.composition.update(condition)
+        model.dataChanged.emit(model.createIndex(0, 0),
+                               model.createIndex(model.rowCount(), model.columnCount()))
 
     def setReadOnly(self, state):
         _CompositionWidget.setReadOnly(self, state)

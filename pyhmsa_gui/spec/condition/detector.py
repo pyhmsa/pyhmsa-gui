@@ -281,9 +281,12 @@ class WindowWidget(ParameterWidget):
         return parameter
 
     def setParameter(self, window):
+        ParameterWidget.setParameter(self, window)
+
         model = self._table.model()
         model.layers = window.layers
-        model.reset()
+        model.dataChanged.emit(model.createIndex(0, 0),
+                               model.createIndex(model.rowCount(), model.columnCount()))
 
     def window(self):
         return self.parameter()

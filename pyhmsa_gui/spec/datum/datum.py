@@ -13,10 +13,10 @@ from qtpy.QtWidgets import \
 
 import matplotlib
 if os.environ[qtpy.QT_API] in qtpy.PYQT5_API:
-    matplotlib.use('qt5agg')
+    matplotlib.use('qt5agg', warn=False, force=True)
     import matplotlib.backends.backend_qt5agg as mbackend #@UnusedImport
 else:
-    matplotlib.use('qt4agg')
+    matplotlib.use('qt4agg', warn=False, force=True)
     import matplotlib.backends.backend_qt4agg as mbackend #@Reimport
 from matplotlib.figure import Figure
 FigureCanvas = mbackend.FigureCanvasQTAgg
