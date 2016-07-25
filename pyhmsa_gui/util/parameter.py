@@ -287,7 +287,7 @@ class ParameterWidget(QWidget):
         return self.CLASS()
 
     def isReadOnly(self):
-        return False
+        return True
 
     def setReadOnly(self, state):
         pass
