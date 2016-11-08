@@ -3,6 +3,8 @@ Utility functions to access the entry points registry
 """
 
 # Standard library modules.
+import logging
+logger = logging.getLogger(__name__)
 from operator import attrgetter
 
 # Third party modules.
@@ -17,7 +19,10 @@ def iter_entry_points(group, name=None):
     entry_points.sort(key=attrgetter('name'))
 
     for entry_point in entry_points:
-        yield entry_point.name, entry_point.load(require=False)
+        try:
+            yield entry_point.name, entry_point.load(require=False)
+        except ImportError:
+            logger.exception("Entry point for {0} missing".format(group))
 
 def iter_condition_widget_classes(name=None):
     return iter_entry_points('pyhmsa_gui.spec.condition', name)

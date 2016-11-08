@@ -164,6 +164,7 @@ class SpecimenPositionListWidget(ParameterWidget):
             elif column == 4:
                 position.t = value
 
+            self.dataChanged.emit(index, index)
             return True
 
         def insertRows(self, row, count=1, parent=None):
@@ -246,9 +247,12 @@ class SpecimenPositionListWidget(ParameterWidget):
         ParameterWidget.__init__(self, object, parent)
 
     def _init_ui(self):
+        # Variables
+        model = self._SpecimenPositionModel()
+
         # Widgets
         self._table = QTableView()
-        self._table.setModel(self._SpecimenPositionModel())
+        self._table.setModel(model)
         self._table.setItemDelegate(self._SpecimenPositionDelegate(self))
         self._table.horizontalHeader().setStretchLastSection(True)
 
@@ -264,6 +268,10 @@ class SpecimenPositionListWidget(ParameterWidget):
         # Signals
         action_add.triggered.connect(self._on_add)
         action_remove.triggered.connect(self._on_remove)
+
+        model.dataChanged.connect(self.edited)
+        model.rowsInserted.connect(self.edited)
+        model.rowsRemoved.connect(self.edited)
 
         return layout
 
@@ -291,8 +299,9 @@ class SpecimenPositionListWidget(ParameterWidget):
 
     def setParameter(self, positions):
         model = self._table.model()
-        model.positions = positions
-        model.reset()
+        model.positions.clear()
+        model.positions.extend(positions)
+        model.modelReset.emit()
 
     def positions(self):
         return self.parameter()
