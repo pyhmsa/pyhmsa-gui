@@ -8,11 +8,7 @@ import unittest
 from qtpy.QtWidgets import QApplication
 from qtpy.QtCore import QObject
 
-try:
-    from qtpy.QtTest import QTest #@UnusedImport
-except ImportError:
-    # Override qtpy which says that PySide's QTest does not work
-    from PySide.QtTest import QTest #@UnusedImport
+from qtpy.QtTest import QTest #@UnusedImport
 
 # Local modules.
 from pyhmsa_gui.util.settings import Settings

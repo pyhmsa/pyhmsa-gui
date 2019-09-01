@@ -11,13 +11,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import \
     QWidget, QVBoxLayout, QTableView, QHeaderView, QSizePolicy
 
-import matplotlib
-if os.environ[qtpy.QT_API] in qtpy.PYQT5_API:
-    matplotlib.use('qt5agg')
-    import matplotlib.backends.backend_qt5agg as mbackend #@UnusedImport
-else:
-    matplotlib.use('qt4agg')
-    import matplotlib.backends.backend_qt4agg as mbackend #@Reimport
+import matplotlib.backends.backend_qt5agg as mbackend #@UnusedImport
 from matplotlib.figure import Figure
 FigureCanvas = mbackend.FigureCanvasQTAgg
 NavigationToolbar = mbackend.NavigationToolbar2QT
