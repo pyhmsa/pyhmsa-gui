@@ -5,8 +5,7 @@
 import unittest
 
 # Third party modules.
-from qtpy.QtWidgets import QApplication
-from qtpy.QtCore import QObject
+from qtpy import QtCore, QtGui, QtWidgets
 
 from qtpy.QtTest import QTest #@UnusedImport
 
@@ -15,7 +14,7 @@ from pyhmsa_gui.util.settings import Settings
 
 # Globals and constants variables.
 
-class MockController(QObject):
+class MockController(QtCore.QObject):
 
     def __init__(self):
         self._settings = Settings("HMSA", "testcase")
@@ -33,11 +32,11 @@ class TestCaseQApp(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        global _instance
-        if _instance is None:
-            _instance = QApplication([])
+        if isinstance(QtGui.qApp, type(None)):
+            self.app = QtWidgets.QApplication([])
+        else:
+            self.app = QtGui.qApp
 
-        self.app = _instance
         self.controller = MockController()
 
     def tearDown(self):
