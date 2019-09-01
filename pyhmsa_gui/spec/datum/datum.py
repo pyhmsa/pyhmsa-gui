@@ -76,10 +76,7 @@ class _DatumTableWidget(_DatumWidget):
 
         header = self._table.horizontalHeader()
         mode = QHeaderView.Stretch
-        if os.environ[qtpy.QT_API] in qtpy.PYQT5_API:
-            header.setSectionResizeMode(mode)
-        else:
-            header.setResizeMode(mode)
+        header.setSectionResizeMode(mode)
 
         # Layouts
         layout = _DatumWidget._init_ui(self)
