@@ -438,7 +438,7 @@ class CalibrationWidget(ParameterWidget):
         self._widget_indexes = {}
 
         for entry_point in iter_entry_points('pyhmsa_gui.spec.condition.calibration'):
-            widget_class = entry_point.load(require=False)
+            widget_class = entry_point.resolve()
             widget = widget_class()
             self._combobox.addItem(widget.accessibleName().title())
             self._widget_indexes[widget.CLASS] = self._stack.addWidget(widget)
