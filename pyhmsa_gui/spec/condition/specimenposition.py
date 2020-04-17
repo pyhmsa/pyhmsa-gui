@@ -6,14 +6,19 @@ Specimen position condition widget
 from operator import methodcaller
 
 # Third party modules.
-from qtpy.QtWidgets import \
-    (QHBoxLayout, QVBoxLayout, QLabel, QItemDelegate, QTableView,
-     QToolBar, QMessageBox)
+from qtpy.QtWidgets import (
+    QHBoxLayout,
+    QVBoxLayout,
+    QLabel,
+    QItemDelegate,
+    QTableView,
+    QToolBar,
+    QMessageBox,
+)
 from qtpy.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 # Local modules.
-from pyhmsa_gui.util.parameter import \
-    ParameterWidget, NumericalAttributeLineEdit
+from pyhmsa_gui.util.parameter import ParameterWidget, NumericalAttributeLineEdit
 from pyhmsa_gui.util.icon import getIcon
 from pyhmsa_gui.spec.condition.condition import _ConditionWidget
 
@@ -21,8 +26,8 @@ from pyhmsa.spec.condition.specimenposition import SpecimenPosition
 
 # Globals and constants variables.
 
-class SpecimenPositionWidget(_ConditionWidget):
 
+class SpecimenPositionWidget(_ConditionWidget):
     def __init__(self, inline=False, parent=None):
         self._inline = inline
         _ConditionWidget.__init__(self, SpecimenPosition, parent)
@@ -40,28 +45,28 @@ class SpecimenPositionWidget(_ConditionWidget):
             layout = QVBoxLayout()
 
             layout_xyz = QHBoxLayout()
-            layout_xyz.addWidget(QLabel('X'))
+            layout_xyz.addWidget(QLabel("X"))
             layout_xyz.addWidget(self._txt_x)
-            layout_xyz.addWidget(QLabel('Y'))
+            layout_xyz.addWidget(QLabel("Y"))
             layout_xyz.addWidget(self._txt_y)
-            layout_xyz.addWidget(QLabel('Z'))
+            layout_xyz.addWidget(QLabel("Z"))
             layout_xyz.addWidget(self._txt_z)
 
             layout_rt = QHBoxLayout()
-            layout_rt.addWidget(QLabel('R'))
+            layout_rt.addWidget(QLabel("R"))
             layout_rt.addWidget(self._txt_r)
-            layout_rt.addWidget(QLabel('T'))
+            layout_rt.addWidget(QLabel("T"))
             layout_rt.addWidget(self._txt_t)
 
             layout.addLayout(layout_xyz)
             layout.addLayout(layout_rt)
         else:
             layout = _ConditionWidget._init_ui(self)
-            layout.addRow('X', self._txt_x)
-            layout.addRow('Y', self._txt_y)
-            layout.addRow('Z', self._txt_z)
-            layout.addRow('R', self._txt_r)
-            layout.addRow('T', self._txt_t)
+            layout.addRow("X", self._txt_x)
+            layout.addRow("Y", self._txt_y)
+            layout.addRow("Z", self._txt_z)
+            layout.addRow("R", self._txt_r)
+            layout.addRow("T", self._txt_t)
 
         # Signals
         self._txt_x.textEdited.connect(self.edited)
@@ -89,10 +94,9 @@ class SpecimenPositionWidget(_ConditionWidget):
         self._txt_r.setText(condition.r)
         self._txt_t.setText(condition.t)
 
+
 class SpecimenPositionListWidget(ParameterWidget):
-
     class _SpecimenPositionModel(QAbstractTableModel):
-
         def __init__(self):
             QAbstractTableModel.__init__(self)
             self.positions = []
@@ -112,30 +116,30 @@ class SpecimenPositionListWidget(ParameterWidget):
             position = self.positions[index.row()]
             column = index.column()
             if column == 0:
-                return str(position.x) if position.x is not None else ''
+                return str(position.x) if position.x is not None else ""
             elif column == 1:
-                return str(position.y) if position.y is not None else ''
+                return str(position.y) if position.y is not None else ""
             elif column == 2:
-                return str(position.z) if position.z is not None else ''
+                return str(position.z) if position.z is not None else ""
             elif column == 3:
-                return str(position.r) if position.r is not None else ''
+                return str(position.r) if position.r is not None else ""
             elif column == 4:
-                return str(position.t) if position.t is not None else ''
+                return str(position.t) if position.t is not None else ""
 
-        def headerData(self, section , orientation, role):
+        def headerData(self, section, orientation, role):
             if role != Qt.DisplayRole:
                 return None
             if orientation == Qt.Horizontal:
                 if section == 0:
-                    return 'X'
+                    return "X"
                 elif section == 1:
-                    return 'Y'
+                    return "Y"
                 elif section == 2:
-                    return 'Z'
+                    return "Z"
                 elif section == 3:
-                    return 'R'
+                    return "R"
                 elif section == 4:
-                    return 'T'
+                    return "T"
             elif orientation == Qt.Vertical:
                 return str(section + 1)
 
@@ -143,12 +147,12 @@ class SpecimenPositionListWidget(ParameterWidget):
             if not index.isValid():
                 return Qt.ItemIsEnabled
 
-            return Qt.ItemFlags(QAbstractTableModel.flags(self, index) |
-                                Qt.ItemIsEditable)
+            return Qt.ItemFlags(
+                QAbstractTableModel.flags(self, index) | Qt.ItemIsEditable
+            )
 
         def setData(self, index, value, role=Qt.EditRole):
-            if not index.isValid() or \
-                    not (0 <= index.row() < len(self.positions)):
+            if not index.isValid() or not (0 <= index.row() < len(self.positions)):
                 return False
 
             position = self.positions[index.row()]
@@ -186,13 +190,12 @@ class SpecimenPositionListWidget(ParameterWidget):
                 parent = QModelIndex()
             self.beginRemoveRows(parent, row, row + count - 1)
 
-            self.positions = self.positions[:row] + self.positions[row + count:]
+            self.positions = self.positions[:row] + self.positions[row + count :]
 
             self.endRemoveRows()
             return True
 
     class _SpecimenPositionDelegate(QItemDelegate):
-
         def __init__(self, parent=None):
             QItemDelegate.__init__(self, parent)
 
@@ -279,20 +282,23 @@ class SpecimenPositionListWidget(ParameterWidget):
             return
 
         model = self._table.model()
-        for row in sorted(map(methodcaller('row'), selection), reverse=True):
+        for row in sorted(map(methodcaller("row"), selection), reverse=True):
             model.removeRow(row)
 
     def parameter(self):
         positions = []
         for position in self._table.model().positions:
-            positions.append(SpecimenPosition(position.x, position.y, position.z,
-                                              position.r, position.t))
+            positions.append(
+                SpecimenPosition(
+                    position.x, position.y, position.z, position.r, position.t
+                )
+            )
         return positions
 
     def setParameter(self, positions):
         model = self._table.model()
         model.positions = positions
-        model.reset()
+        model.modelReset.emit()
 
     def positions(self):
         return self.parameter()
@@ -310,6 +316,8 @@ class SpecimenPositionListWidget(ParameterWidget):
         self._toolbar.setEnabled(not state)
 
     def isReadOnly(self):
-        return ParameterWidget.isReadOnly(self) and \
-            self._table.editTriggers() == QTableView.EditTrigger.NoEditTriggers and \
-            not self._toolbar.isEnabled()
+        return (
+            ParameterWidget.isReadOnly(self)
+            and self._table.editTriggers() == QTableView.EditTrigger.NoEditTriggers
+            and not self._toolbar.isEnabled()
+        )

@@ -8,8 +8,14 @@ from operator import methodcaller
 
 # Third party modules.
 from qtpy.QtGui import QDoubleValidator
-from qtpy.QtWidgets import \
-    QItemDelegate, QTableView, QToolBar, QMessageBox, QComboBox, QLineEdit
+from qtpy.QtWidgets import (
+    QItemDelegate,
+    QTableView,
+    QToolBar,
+    QMessageBox,
+    QComboBox,
+    QLineEdit,
+)
 from qtpy.QtCore import Qt, QAbstractTableModel, QModelIndex
 
 # Local modules.
@@ -24,8 +30,8 @@ from pyhmsa.util.element_properties import get_symbol
 # Globals and constants variables.
 from pyhmsa.spec.condition.composition import _COMPOSITION_UNITS
 
-class _CompositionWidget(_ConditionWidget):
 
+class _CompositionWidget(_ConditionWidget):
     def _init_ui(self):
         # Widgets
         self._cb_unit = QComboBox()
@@ -33,7 +39,7 @@ class _CompositionWidget(_ConditionWidget):
 
         # Layouts
         layout = _ConditionWidget._init_ui(self)
-        layout.addRow('<i>Unit</i>', self._cb_unit)
+        layout.addRow("<i>Unit</i>", self._cb_unit)
 
         # Signals
         self._cb_unit.currentIndexChanged.connect(self.edited)
@@ -54,13 +60,11 @@ class _CompositionWidget(_ConditionWidget):
         self._cb_unit.setEnabled(not state)
 
     def isReadOnly(self):
-        return _ConditionWidget.isReadOnly(self) and \
-            not self._cb_unit.isEnabled()
+        return _ConditionWidget.isReadOnly(self) and not self._cb_unit.isEnabled()
+
 
 class CompositionElementalWidget(_CompositionWidget):
-
     class _CompositionModel(QAbstractTableModel):
-
         def __init__(self):
             QAbstractTableModel.__init__(self)
             self.composition = OrderedDict()
@@ -72,8 +76,7 @@ class CompositionElementalWidget(_CompositionWidget):
             return 2
 
         def data(self, index, role):
-            if not index.isValid() or \
-                    not (0 <= index.row() < len(self.composition)):
+            if not index.isValid() or not (0 <= index.row() < len(self.composition)):
                 return None
 
             if role == Qt.TextAlignmentRole:
@@ -86,20 +89,20 @@ class CompositionElementalWidget(_CompositionWidget):
             column = index.column()
             if column == 0:
                 if z is None:
-                    return 'none'
+                    return "none"
                 else:
                     return str(get_symbol(z))
             elif column == 1:
                 return str(fraction)
 
-        def headerData(self, section , orientation, role):
+        def headerData(self, section, orientation, role):
             if role != Qt.DisplayRole:
                 return None
             if orientation == Qt.Horizontal:
                 if section == 0:
-                    return 'Element'
+                    return "Element"
                 elif section == 1:
-                    return 'Fraction'
+                    return "Fraction"
             elif orientation == Qt.Vertical:
                 return str(section + 1)
 
@@ -107,12 +110,12 @@ class CompositionElementalWidget(_CompositionWidget):
             if not index.isValid():
                 return Qt.ItemIsEnabled
 
-            return Qt.ItemFlags(QAbstractTableModel.flags(self, index) |
-                                Qt.ItemIsEditable)
+            return Qt.ItemFlags(
+                QAbstractTableModel.flags(self, index) | Qt.ItemIsEditable
+            )
 
         def setData(self, index, value, role=Qt.EditRole):
-            if not index.isValid() or \
-                    not (0 <= index.row() < len(self.composition)):
+            if not index.isValid() or not (0 <= index.row() < len(self.composition)):
                 return False
 
             z = list(self.composition.keys())[index.row()]
@@ -150,14 +153,13 @@ class CompositionElementalWidget(_CompositionWidget):
             self.beginRemoveRows(parent, row, count + row - 1)
 
             keys = list(self.composition.keys())
-            for key in keys[:row] + keys[row + count:]:
+            for key in keys[:row] + keys[row + count :]:
                 self.composition.pop(key)
 
             self.endRemoveRows()
             return True
 
     class _CompositionDelegate(QItemDelegate):
-
         def __init__(self, parent=None):
             QItemDelegate.__init__(self, parent)
 
@@ -179,7 +181,7 @@ class CompositionElementalWidget(_CompositionWidget):
             text = index.model().data(index, Qt.DisplayRole)
             column = index.column()
             if column == 0:
-                if text != 'none':
+                if text != "none":
                     editor.setSelection(text)
             elif column == 1:
                 editor.setText(text)
@@ -238,11 +240,11 @@ class CompositionElementalWidget(_CompositionWidget):
             return
 
         model = self._table.model()
-        for row in sorted(map(methodcaller('row'), selection), reverse=True):
+        for row in sorted(map(methodcaller("row"), selection), reverse=True):
             model.removeRow(row)
 
     def _create_parameter(self):
-        return self.CLASS('wt%')
+        return self.CLASS("wt%")
 
     def parameter(self, parameter=None):
         parameter = _CompositionWidget.parameter(self, parameter)
@@ -252,7 +254,7 @@ class CompositionElementalWidget(_CompositionWidget):
     def setParameter(self, condition):
         _CompositionWidget.setParameter(self, condition)
         self._table.model().composition.update(condition)
-        self._table.model().reset()
+        self._table.model().modelReset.emit()
 
     def setReadOnly(self, state):
         _CompositionWidget.setReadOnly(self, state)
@@ -264,6 +266,8 @@ class CompositionElementalWidget(_CompositionWidget):
         self._toolbar.setEnabled(not state)
 
     def isReadOnly(self):
-        return _CompositionWidget.isReadOnly(self) and \
-            self._table.editTriggers() == QTableView.EditTrigger.NoEditTriggers and \
-            not self._toolbar.isEnabled()
+        return (
+            _CompositionWidget.isReadOnly(self)
+            and self._table.editTriggers() == QTableView.EditTrigger.NoEditTriggers
+            and not self._toolbar.isEnabled()
+        )
